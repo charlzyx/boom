@@ -2,6 +2,7 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  base: "boom",
   title: "Chao's HomeLab",
   description: "A HomeLab NAS & Router Setup Record.",
   themeConfig: {

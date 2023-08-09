@@ -12,6 +12,8 @@ sh get-docker.sh
 
 ## DNS 服务: dnsmaq
 
+systemd-resolved
+
 ## Samba 服务
 
 ## tailscale 内网穿透

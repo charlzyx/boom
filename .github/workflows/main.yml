@@ -86,7 +86,7 @@ jobs:
 
         with:
 
-          path: docs/.vitepress/dist
+          path: .vitepress/dist
 
   # Deployment job
 

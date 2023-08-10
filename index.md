@@ -3,14 +3,15 @@
 layout: home
 
 hero:
-  name: "Chao's HomeLab"
-  text: "A HomeLab NAS & Router Setup Record."
-  tagline: nothing to fear.
+  name: "Chao's BoomLab"
+  text: "Nothing to fear. "
+  tagline: NAS × 软路由配置指北, 由 Proxmox VE 强力驱动.
   actions:
     - theme: brand
-      text: Arch
+      text: 让我看看
       link: /arch
 ---
 
-
-![IMG_20230810_001923](https://github.com/charlzyx/boom/assets/18055018/2377599e-fdf9-43ad-a17d-9b5ad6956c58)
+<div class="boxbox" >
+  <img src="/assets/go.png" />
+</div>

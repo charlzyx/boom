@@ -54,5 +54,11 @@ apt update
 ### 安装基础软件
 
 ```sh
-apt install git curl vim
+apt install git curl vim unzip
+```
+
+### 配置时区
+
+```sh
+timedatectl set-timezone Asia/Shanghai
 ```

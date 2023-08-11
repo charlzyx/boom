@@ -35,14 +35,18 @@ deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bookworm-security main 
 
 自动脚本
 
+PVE Host: Debain 12
+
 ```sh
-# 备份
 cp /etc/apt/sources.list /etc/apt/sources.list.bak
-# 写入
-cat /scripts/pve/sources.list > /etc/apt/sources.list
+# Debain
+echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free non-free-firmware" >> /etc/apt/sources.list
+echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware" >> /etc/apt/sources.list
+echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-backports main contrib non-free non-free-firmware" >> /etc/apt/sources.list
+echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bookworm-security main contrib non-free non-free-firmware" >> /etc/apt/sources.list
 # pve 软件源
 touch /etc/apt/sources.list.d/pve-no-subscription.list
-echo "deb https://mirrors.tuna.tsinghua.edu.cn/proxmox/debian/pve bullseye pve-no-subscription" > /etc/apt/sources.list.d/pve-no-subscription.list
+echo "deb https://mirrors.tuna.tsinghua.edu.cn/proxmox/debian/pve bookworm pve-no-subscription" > /etc/apt/sources.list.d/pve-no-subscription.list
 # CT Templates 针对 /usr/share/perl5/PVE/APLInfo.pm 文件的修改，重启后生效。
 cp /usr/share/perl5/PVE/APLInfo.pm /usr/share/perl5/PVE/APLInfo.pm_back
 sed -i 's|http://download.proxmox.com|https://mirrors.tuna.tsinghua.edu.cn/proxmox|g' /usr/share/perl5/PVE/APLInfo.pm
@@ -51,10 +55,16 @@ apt update
 
 ```
 
-### 安装基础软件
+LXC: Debain 11
 
 ```sh
-apt install git curl vim unzip
+cp /etc/apt/sources.list /etc/apt/sources.list.bak
+# Debain
+echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free non-free-firmware" >> /etc/apt/sources.list
+echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware" >> /etc/apt/sources.list
+echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-backports main contrib non-free non-free-firmware" >> /etc/apt/sources.list
+echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bookworm-security main contrib non-free non-free-firmware" >> /etc/apt/sources.list
+apt update
 ```
 
 ### 配置时区
@@ -62,3 +72,39 @@ apt install git curl vim unzip
 ```sh
 timedatectl set-timezone Asia/Shanghai
 ```
+
+### 安装基础软件
+
+> 出了 git, curl, unzip 其他看心情
+
+```sh
+
+# 基础软件
+apt install git curl unzip zsh build-essential
+
+# 切换zsh
+chsh -s $(which zsh)
+# 安装 starship
+curl -sS https://starship.rs/install.sh | sh
+# eval "$(starship init zsh)"
+echo 'eval "$(starship init zsh)"' >> ~/.zshrc
+echo 'source ~/.bashrc' >> ~/.zshrc
+# 安装 nvim
+rm -rf /usr/local/nvim
+rm -rf /usr/share/nvim
+rm -rf ~/.config/nvim
+rm -rf /usr/local/nvim
+rm -rf /usr/local/vi
+rm -rf /usr/local/vim
+wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
+tar -xvzf nvim-linux64.tar.gz &&  mv nvim-linux64 nvim && mv nvim /usr/local/
+ln -s /usr/local/nvim/bin/nvim /usr/local/bin/nvim
+ln -s /usr/local/nvim/bin/nvim /usr/local/bin/vim
+ln -s /usr/local/nvim/bin/nvim /usr/local/bin/vi
+git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1 && nvim
+
+```
+
+## 我的配置
+
+https://github.com/charlzyx/pve.conf

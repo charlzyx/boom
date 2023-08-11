@@ -287,3 +287,7 @@ git clone https://github.com/charlzyx/autoclash.git /etc/autoclash
 chmod +x /etc/autoclash/autoclash.sh
 cd /etc/autoclash && ./autoclash.sh 你的订阅地址
 ```
+
+## 我的配置
+
+https://github.com/charlzyx/luxdns.conf

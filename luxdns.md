@@ -22,17 +22,11 @@ PVEID: 111
 静态 IpV4: 192.168.6.1/24
 网关: 192.168.6.2
 
-### 开启 ssh
-
-编辑 `/etc/ssh/sshd_conf`
-
-修改 `#PermitRootLogin prohibit-password` -> `PermitRootLogin yes`
-
 ### 基础配置
 
 参考 [这里](/pve-install)
 
-### /etc/pve/lxc/111.conf
+### /etc/pve/lxc/101.conf
 
 添加以下配置, 之后重启虚拟机
 
@@ -49,7 +43,7 @@ lxc.mount.entry: /dev/net dev/net none bind,create=dir
 
 开启 ipv4/ipv6 转发
 
-````bash
+```bash
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 echo "net.ipv6.conf.all.forwarding" >> /etc/sysctl.conf
 sysctl -p
@@ -63,7 +57,19 @@ sysctl -p
 - AdguardHome WEB UI: 3000
 - MOSDNS: 3053
 - clash dns: 1053
-- clash tun: any:53
+
+## DNS 流向
+
+```sh
+局域网设备
+  -> WIFI 硬路由
+  -> iKuai (192.168.6.2)
+  -> LuxDNS(192.168.6.1)
+     -> 53: AdGuradHome (劫持 *.home.com -> 192.168.6.6)
+        -> 3053: mosdns
+           -> (if cn) 公共DNS
+           -> (not cn) 1053 clash
+```
 
 ### 安装
 
@@ -72,7 +78,193 @@ sysctl -p
 ```bash
 curl -s -S -L https://raw.githubusercontent.com/AdguardTeam/AdGuardHome/master/scripts/install.sh | sh -s -- -v
 
-````
+```
+
+#### /opt/AdguardHome.yaml
+
+```yaml
+http:
+  address: 0.0.0.0:3000
+  session_ttl: 720h
+users:
+  - name: root
+    password: $2a$10$tcAjZYmVhq6fRg.pmR3you42fJao3qrgetf9mCxGC8D/2VgHAwyLm
+auth_attempts: 10
+block_auth_min: 1
+http_proxy: ""
+language: zh-cn
+theme: auto
+debug_pprof: false
+dns:
+  bind_hosts:
+    - 0.0.0.0
+  port: 53
+  anonymize_client_ip: false
+  protection_enabled: true
+  blocking_mode: default
+  blocking_ipv4: ""
+  blocking_ipv6: ""
+  blocked_response_ttl: 10
+  protection_disabled_until: null
+  parental_block_host: family-block.dns.adguard.com
+  safebrowsing_block_host: standard-block.dns.adguard.com
+  ratelimit: 0
+  ratelimit_whitelist: []
+  refuse_any: true
+  upstream_dns:
+    - 127.0.0.1:3053
+  upstream_dns_file: ""
+  bootstrap_dns:
+    - 223.6.6.6
+    - 9.9.9.9
+    - 2620:fe::10
+    - 2620:fe::fe:10
+  all_servers: false
+  fastest_addr: false
+  fastest_timeout: 1s
+  allowed_clients: []
+  disallowed_clients: []
+  blocked_hosts:
+    - version.bind
+    - id.server
+    - hostname.bind
+  trusted_proxies:
+    - 127.0.0.0/8
+    - ::1/128
+  cache_size: 10240000
+  cache_ttl_min: 60
+  cache_ttl_max: 600
+  cache_optimistic: true
+  bogus_nxdomain: []
+  aaaa_disabled: false
+  enable_dnssec: false
+  edns_client_subnet:
+    custom_ip: ""
+    enabled: false
+    use_custom: false
+  max_goroutines: 300
+  handle_ddr: true
+  ipset: []
+  ipset_file: ""
+  bootstrap_prefer_ipv6: false
+  filtering_enabled: true
+  filters_update_interval: 24
+  parental_enabled: false
+  safebrowsing_enabled: false
+  safebrowsing_cache_size: 1048576
+  safesearch_cache_size: 1048576
+  parental_cache_size: 1048576
+  cache_time: 30
+  safe_search:
+    enabled: false
+    bing: true
+    duckduckgo: true
+    google: true
+    pixabay: true
+    yandex: true
+    youtube: true
+  rewrites:
+    - domain: "*.home.com"
+      answer: 192.168.6.6
+  blocked_services:
+    schedule:
+      time_zone: Local
+    ids: []
+  upstream_timeout: 10s
+  private_networks: []
+  use_private_ptr_resolvers: true
+  local_ptr_upstreams: []
+  use_dns64: false
+  dns64_prefixes: []
+  serve_http3: false
+  use_http3_upstreams: false
+tls:
+  enabled: false
+  server_name: ""
+  force_https: false
+  port_https: 443
+  port_dns_over_tls: 853
+  port_dns_over_quic: 853
+  port_dnscrypt: 0
+  dnscrypt_config_file: ""
+  allow_unencrypted_doh: false
+  certificate_chain: ""
+  private_key: ""
+  certificate_path: ""
+  private_key_path: ""
+  strict_sni_check: false
+querylog:
+  ignored: []
+  interval: 2160h
+  size_memory: 1000
+  enabled: true
+  file_enabled: true
+statistics:
+  ignored: []
+  interval: 24h
+  enabled: true
+filters:
+  - enabled: false
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt
+    name: AdGuard DNS filter
+    id: 1
+  - enabled: false
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt
+    name: AdAway Default Blocklist
+    id: 2
+  - enabled: false
+    url: https://raw.githubusercontent.com/Cats-Team/AdRules/main/hosts.txt
+    name: Cats-Team/AdRules/Hosts
+    id: 1691654156
+  - enabled: false
+    url: https://raw.githubusercontent.com/Cats-Team/AdRules/main/adblock_lite.txt
+    name: AdRules AdBlock List Lite
+    id: 1691654157
+  - enabled: true
+    url: https://cdn.jsdelivr.net/gh/privacy-protection-tools/anti-AD@master/anti-ad-easylist.txt
+    name: anti-AD
+    id: 1691829090
+whitelist_filters: []
+user_rules: []
+dhcp:
+  enabled: false
+  interface_name: ""
+  local_domain_name: lan
+  dhcpv4:
+    gateway_ip: ""
+    subnet_mask: ""
+    range_start: ""
+    range_end: ""
+    lease_duration: 86400
+    icmp_timeout_msec: 1000
+    options: []
+  dhcpv6:
+    range_start: ""
+    lease_duration: 86400
+    ra_slaac_only: false
+    ra_allow_slaac: false
+clients:
+  runtime_sources:
+    whois: true
+    arp: true
+    rdns: true
+    dhcp: true
+    hosts: true
+  persistent: []
+log:
+  file: ""
+  max_backups: 0
+  max_size: 100
+  max_age: 3
+  compress: false
+  local_time: false
+  verbose: false
+os:
+  group: ""
+  user: ""
+  rlimit_nofile: 0
+schema_version: 24
+```
 
 ### mosdns
 

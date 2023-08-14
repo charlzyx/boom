@@ -55,6 +55,12 @@ apt update
 timedatectl set-timezone Asia/Shanghai
 ```
 
+### 开启 ssh
+
+编辑 `/etc/ssh/sshd_conf`
+
+修改 `#PermitRootLogin prohibit-password` -> `PermitRootLogin yes`
+
 ### 安装基础软件
 
 > 出了 git, curl, unzip 其他看心情

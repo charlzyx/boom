@@ -17,7 +17,7 @@ USB3.2: 16TiB 外接硬盘
 
 ## 路由拓扑
 
-局域网段使用了 `192.168.6.0/24`, 并提供了 `.home.com` -> 宿主机的 局域网 DNS 劫持
+局域网段使用了 `192.168.6.0/24`
 
 0. 物理结构: WWW:光猫:LAN -> WAN:PVE 软路由:LAN -> WIFI 硬路由:LAN
 
@@ -64,8 +64,8 @@ USB3.2: 16TiB 外接硬盘
   -> LuxDNS(192.168.6.1)
      -> 53: AdGuradHome (劫持 *.home.com -> 192.168.6.6)
         -> 3053: mosdns
-           -> (cn) 公共DNS
-           |-> (not_cn) 1053 clash
+           -> (if cn) 公共DNS
+           -> (not cn) 1053 clash
 ```
 
 ## 流量走向

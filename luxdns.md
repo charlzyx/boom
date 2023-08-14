@@ -22,7 +22,7 @@
            -> (not cn) 1053 clash fake-ip dns
 ```
 
-## 分流效果与 DNS 劫持(home.com)
+## 分流效果
 
 ![google](/assets/sgoogle.png)
 ![baidu](/assets/sbaidu.png)

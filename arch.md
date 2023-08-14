@@ -1,25 +1,84 @@
 # 整体架构 ALL-IN-ONE
 
-我的诉求相对简单用一个双网口 X86 做一个 NAS × 软路由; ALL BOOM! ONE
+## 硬件配置:
 
-- 其中 NAS 通过 USB 外置硬盘来实现存储, 系统主要靠 docker 软件做服务
-- 软路由的诉求相对简单, 只有一个出国留学, 但要求自然丝滑~~
-
-## 硬件
-
+```bash
 CPU: Intel Celeron J6412 (4) @ 2.600GHz
-
 Arch: x86_64
-
 物理双网口: enp1s0 enp2s0
-
 USB3.2: 16TiB 外接硬盘
+```
+
+## 需求整理
+
+- NAS 诉求: 局域网网盘 + 电视机
+- 软路由诉求: 出海海淘淘淘气
+
+技术选型使用 Proxmox VE 虚拟机
+
+其中涉及到的应用大概如下
+
+- 网盘
+  - alist & webdav # 宿主机安装
+  - ftp/smb # 宿主机安装配置
+- 电视机
+  - jellyfin # docker
+- 下载
+  - xunlei # docker 特权模式+host 网络
+  - tailscale # 宿主机安装 随时随地打开 home.com
+- 管理
+  - pve 管理 web 页面 #宿主机自带
+  - portiner # docker docker 管理 web 页面
+  - clash#yacd # LXC 海淘
+
+整体看来偏向 NAS 需求, 软路由需求主要是一个丝滑的海淘
+
+至于应用是装在宿主机/LXC/docker 的选择主要看
+
+1. 是否对网速/硬盘有比较高的要求 ftp/smb/alist
+2. 配置的复杂度 复杂 -> docker / lxc , 否则宿主机 jellyfin/xunlei
+
+大概这种简单的逻辑
 
 ## 路由拓扑
 
 局域网段使用了 `192.168.6.0/24`
 
-0. 物理结构: WWW:光猫:LAN -> WAN:PVE 软路由:LAN -> WIFI 硬路由:LAN
+物理结构:
+
+```bash
+ WWW:光猫:LAN -> WAN:PVE 软路由:LAN -> WIFI 硬路由:LAN
+```
+
+实际 DNS/流量转发主力在 LuxDNS 服务器配置, 在后续[LuxDNS](/luxdns) 展开, 先看下设计思路
+
+### DNS 流向
+
+```sh
+局域网设备
+  -> WIFI 硬路由
+  -> iKuai (192.168.6.2)
+  -> LuxDNS(192.168.6.1)
+     -> 53: AdGuradHome (劫持 *.home.com -> 192.168.6.6)
+        -> 3053: mosdns
+           -> (if cn) 公共DNS
+           -> (not cn) 1053 clash fake-ip dns
+```
+
+### 流量走向
+
+```sh
+局域网设置
+  -> WIFI 硬路由
+  -> iKuai (192.168.6.2)
+  -> LuxDNS(192.168.6.1)
+     -> TUN 劫持透明代理(科学部分)
+  -> iKuai (192.168.6.2)
+  -> 光猫
+
+```
+
+## 具体配置
 
 1. 光猫:
 
@@ -55,32 +114,6 @@ USB3.2: 16TiB 外接硬盘
 - 网关 192.168.6.2
 ```
 
-## DNS 流向
-
-```sh
-局域网设备
-  -> WIFI 硬路由
-  -> iKuai (192.168.6.2)
-  -> LuxDNS(192.168.6.1)
-     -> 53: AdGuradHome (劫持 *.home.com -> 192.168.6.6)
-        -> 3053: mosdns
-           -> (if cn) 公共DNS
-           -> (not cn) 1053 clash
-```
-
-## 流量走向
-
-```sh
-局域网设置
-  -> WIFI 硬路由
-  -> iKuai (192.168.6.2)
-  -> LuxDNS(192.168.6.1)
-     -> TUN 劫持透明代理(科学部分)
-  -> iKuai (192.168.6.2)
-  -> 光猫
-
-```
-
 ## 参考文档
 
-- [基于 DNS 的内网透明代理分流方案](https://songchenwen.com/tproxy-split-by-dns) 图就是从这个大佬这里接的
+- [基于 DNS 的内网透明代理分流方案](https://songchenwen.com/tproxy-split-by-dns)

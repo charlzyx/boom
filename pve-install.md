@@ -63,7 +63,7 @@ timedatectl set-timezone Asia/Shanghai
 
 ### 安装基础软件
 
-> 出了 git, curl, unzip 其他看心情
+> 除了 git, curl, unzip 其他看心情
 
 ```sh
 
@@ -86,6 +86,6 @@ ln -s /usr/local/nvim/bin/nvim /usr/local/bin/vi
 
 ```
 
-## 我的配置
+## 我的配置参考
 
 https://github.com/charlzyx/pve.conf

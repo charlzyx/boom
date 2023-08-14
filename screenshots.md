@@ -10,4 +10,3 @@
 ![xl](/assets/xl.png)
 ![alist](/assets/alist.png)
 ![tv](/assets/tv.png)
-![resync](/assets/resync.png)

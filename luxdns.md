@@ -9,9 +9,26 @@
 >
 > 讨论: https://www.right.com.cn/forum/thread-8295979-1-1.html
 
-## LXC 创建与基础配置
+## DNS 流向设计
 
-基础镜像: debain 11
+```sh
+局域网设备
+  -> WIFI 硬路由
+  -> iKuai (192.168.6.2)
+  -> LuxDNS(192.168.6.1)
+     -> 53: AdGuradHome (劫持 *.home.com -> 192.168.6.6)
+        -> 3053: mosdns
+           -> (if cn) 公共DNS
+           -> (not cn) 1053 clash fake-ip dns
+```
+
+## 分流效果与 DNS 劫持(home.com)
+
+![google](/assets/sgoogle.png)
+![baidu](/assets/sbaidu.png)
+![home](/assets/shome.png)
+
+## LXC 创建与基础配置 Debain 11
 
 ### PVE 创建 Debain 11
 
@@ -26,28 +43,28 @@ PVEID: 111
 
 参考 [这里](/pve-install)
 
-### /etc/pve/lxc/101.conf
+### /etc/pve/lxc/[CT 容器 ID].conf
 
 添加以下配置, 之后重启虚拟机
 
 ```bash
 # 开启特权
 unprivileged: 0
-# 开启 tun
+# 开启 tun clash 需要
 lxc.cgroup.devices.allow: c 10:200 rwm
 lxc.cgroup2.devices.allow: c 10:200 rwm
 lxc.mount.entry: /dev/net dev/net none bind,create=dir
 ```
 
-## LUXDNS 端口
-
-开启 ipv4/ipv6 转发
+## 开启 ipv4/ipv6 转发
 
 ```bash
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 echo "net.ipv6.conf.all.forwarding" >> /etc/sysctl.conf
 sysctl -p
 ```
+
+## DNS 设计与端口说明
 
 默认系统 systemd-resolve 占用了 53 端口, 通过以下命令停止并禁用自启动
 
@@ -58,22 +75,7 @@ sysctl -p
 - MOSDNS: 3053
 - clash dns: 1053
 
-## DNS 流向
-
-```sh
-局域网设备
-  -> WIFI 硬路由
-  -> iKuai (192.168.6.2)
-  -> LuxDNS(192.168.6.1)
-     -> 53: AdGuradHome (劫持 *.home.com -> 192.168.6.6)
-        -> 3053: mosdns
-           -> (if cn) 公共DNS
-           -> (not cn) 1053 clash
-```
-
-### 安装
-
-#### AdguardHome
+### 安装 AdguardHome
 
 ```bash
 curl -s -S -L https://raw.githubusercontent.com/AdguardTeam/AdGuardHome/master/scripts/install.sh | sh -s -- -v
@@ -266,9 +268,7 @@ os:
 schema_version: 24
 ```
 
-### mosdns
-
-下载与安装
+### 安装 mosdns v5
 
 ```sh
 ## 下载
@@ -283,7 +283,7 @@ systemctl start mosdns
 systemctl enable mosdns
 ```
 
-准备科学规则
+#### 准备科学分流规则
 
 ```bash
 # https://www.xukecheng.tech/use-mosdns-and-adguardhome-to-build-your-own-dns
@@ -301,7 +301,7 @@ touch /etc/mosdns/force-cn.txt && \
 touch /etc/mosdns/hosts.txt && \
 ```
 
-配置文件 `/opt/mosdns/config.yaml`
+#### 准备配置文件 `/opt/mosdns/config.yaml`
 
 ```yaml
 log:
@@ -482,6 +482,6 @@ chmod +x /etc/autoclash/autoclash.sh
 cd /etc/autoclash && ./autoclash.sh 你的订阅地址
 ```
 
-## 我的配置
+### 我的配置参考
 
 https://github.com/charlzyx/luxdns.conf

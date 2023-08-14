@@ -1,15 +1,13 @@
 # 截图们
 
-<div class="boxbox" >
-  <img src="/assets/pve.png" />
-  <img src="/assets/go.png" />
-  <img src="/assets/ikuai.png" />
-  <img src="/assets/docker.png" />
-  <img src="/assets/adg.png" />
-  <img src="/assets/adg_settings.png" />
-  <img src="/assets/yacd.png" />
-  <img src="/assets/xl.png" />
-  <img src="/assets/alist.png" />
-  <img src="/assets/tv.png" />
-  <img src="/assets/resync.png" />
-</div>
+![pve](/assets/pve.png)
+![go](/assets/go.png)
+![ikuai](/assets/ikuai.png)
+![docker](/assets/docker.png)
+![adg](/assets/adg.png)
+![adg_settings](/assets/adg_settings.png)
+![yacd](/assets/yacd.png)
+![xl](/assets/xl.png)
+![alist](/assets/alist.png)
+![tv](/assets/tv.png)
+![resync](/assets/resync.png)

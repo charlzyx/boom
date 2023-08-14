@@ -17,8 +17,10 @@ export default defineConfig({
     sidebar: [
       { text: "Arch", link: "/arch" },
       { text: "Proxmox VE 安装", link: "/pve-install" },
-      { text: "PVE 宿主机配置", link: "/pve" },
-      { text: "LuxDNS 配置", link: "/luxdns" },
+      { text: "宿主机配置", link: "/pve" },
+      { text: "FTP 配置", link: "/vsftp" },
+      { text: "Samba 配置", link: "/smb" },
+      { text: "LuxDNS", link: "/luxdns" },
       { text: "截图们", link: "/screenshots" },
     ],
 

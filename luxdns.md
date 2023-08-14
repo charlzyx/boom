@@ -4,9 +4,9 @@
 ![LuxDNS 分流&透明代理 ](/assets/tproxy-split-by-dns.png)
 
 > 参考: https://songchenwen.com/tproxy-split-by-dns
-> 
+>
 > 参考: https://www.xukecheng.tech/use-mosdns-and-adguardhome-to-build-your-own-dns
-> 
+>
 > 讨论: https://www.right.com.cn/forum/thread-8295979-1-1.html
 
 ## LXC 创建与基础配置
@@ -19,8 +19,8 @@
 
 PVEID: 111
 网卡: eth0:vmbr0
-静态 IpV4: 119.119.119.111/24
-网关: 119.119.119.119
+静态 IpV4: 192.168.6.1/24
+网关: 192.168.6.2
 
 ### 开启 ssh
 

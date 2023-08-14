@@ -17,25 +17,7 @@
 - Debian 软件仓库镜像使用帮助 https://mirrors.tuna.tsinghua.edu.cn/help/debian/
 - Proxmox 软件仓库镜像使用帮助 https://mirrors.tuna.tsinghua.edu.cn/help/proxmox/
 
-```sh
-# /scripts/pve/sources.list
-# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free non-free-firmware
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free non-free-firmware
-
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware
-
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-backports main contrib non-free non-free-firmware
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-backports main contrib non-free non-free-firmware
-
-deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bookworm-security main contrib non-free non-free-firmware
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security bookworm-security main contrib non-free non-free-firmware
-```
-
-自动脚本
-
-PVE Host: Debain 12
+#### 1. PVE Host: Debain 12
 
 ```sh
 cp /etc/apt/sources.list /etc/apt/sources.list.bak
@@ -55,15 +37,15 @@ apt update
 
 ```
 
-LXC: Debain 11
+#### 2. LXC: Debain 11
 
 ```sh
 cp /etc/apt/sources.list /etc/apt/sources.list.bak
 # Debain
-echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free non-free-firmware" >> /etc/apt/sources.list
-echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware" >> /etc/apt/sources.list
-echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-backports main contrib non-free non-free-firmware" >> /etc/apt/sources.list
-echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bookworm-security main contrib non-free non-free-firmware" >> /etc/apt/sources.list
+echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free non-free-firmware" >> /etc/apt/sources.list
+echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free non-free-firmware" >> /etc/apt/sources.list
+echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free non-free-firmware" >> /etc/apt/sources.list
+echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free non-free-firmware" >> /etc/apt/sources.list
 apt update
 ```
 
@@ -80,7 +62,7 @@ timedatectl set-timezone Asia/Shanghai
 ```sh
 
 # 基础软件
-apt install git curl unzip zsh build-essential
+apt install git curl unzip zsh
 
 # 切换zsh
 chsh -s $(which zsh)
@@ -90,18 +72,11 @@ curl -sS https://starship.rs/install.sh | sh
 echo 'eval "$(starship init zsh)"' >> ~/.zshrc
 echo 'source ~/.bashrc' >> ~/.zshrc
 # 安装 nvim
-rm -rf /usr/local/nvim
-rm -rf /usr/share/nvim
-rm -rf ~/.config/nvim
-rm -rf /usr/local/nvim
-rm -rf /usr/local/vi
-rm -rf /usr/local/vim
 wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
 tar -xvzf nvim-linux64.tar.gz &&  mv nvim-linux64 nvim && mv nvim /usr/local/
 ln -s /usr/local/nvim/bin/nvim /usr/local/bin/nvim
 ln -s /usr/local/nvim/bin/nvim /usr/local/bin/vim
 ln -s /usr/local/nvim/bin/nvim /usr/local/bin/vi
-git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1 && nvim
 
 ```
 

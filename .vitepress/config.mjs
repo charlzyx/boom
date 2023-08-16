@@ -18,7 +18,6 @@ export default defineConfig({
       { text: "Arch", link: "/arch" },
       { text: "Proxmox VE 安装", link: "/pve-install" },
       { text: "宿主机配置", link: "/pve" },
-      { text: "FTP 配置", link: "/vsftp" },
       { text: "Samba 配置", link: "/smb" },
       { text: "LuxDNS", link: "/luxdns" },
       { text: "截图们", link: "/screenshots" },

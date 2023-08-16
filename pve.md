@@ -145,4 +145,6 @@ systemctl enable sftpgo
 systemctl start sftpgo
 ```
 
-## [smb](/smb) TODO: 用处不大了, 考虑废弃
+## [smb](/smb)
+
+> 用处不大, 考虑废弃

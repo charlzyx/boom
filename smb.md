@@ -58,6 +58,7 @@ root 用户配置 `root.smb.conf`
   valid users = @root
   create mask = 0755
   directory mask = 0755
+  fource user = root
 ```
 
 tv 用户配置 `tv.smb.conf`
@@ -69,4 +70,5 @@ tv 用户配置 `tv.smb.conf`
   valid users = @tv
   create mask = 0755
   directory mask = 0755
+  fource user = tv
 ```

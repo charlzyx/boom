@@ -102,6 +102,47 @@ curl -fsSL https://tailscale.com/install.sh | sh
 tailscale up --accept-dns=false --accept-routes=true  --advertise-routes=192.168.6.0/24  --netfilter-mode=off --reset
 ```
 
-## [ftp](/vsftp)
+## sftpgo
 
-## [smb](/smb)
+支持 SFTP/FTP/WebDav 还有 WebAdmin 可视化管理用户&权限, 比 ~~[vsftp](/vsftp)~~ 好用多了
+
+安装与启动
+
+```bash
+# https://github.com/drakkan/sftpgo/releases/tag/v2.5.4
+mkdir -p /etc/sftpgo
+cd /etc/sftpgo
+wget https://github.com/drakkan/sftpgo/releases/download/v2.5.4/sftpgo_v2.5.4_linux_x86_64.tar.xz
+tar -xf sftpgo_v2.5.4_linux_x86_64.tar.xz
+rm sftpgo_v2.5.4_linux_x86_64.tar.xz
+```
+
+使用 systemd 管理
+
+添加文件 `/etc/systemd/system/sftpgo.service` 内容如下
+
+```bash
+# /etc/systemd/system/sftpgo.service
+[Unit]
+Description=sftpgo service
+Wants=network.target
+After=network.target network.service
+
+[Service]
+Type=simple
+WorkingDirectory=/etc/sftpgo
+ExecStart=/etc/sftpgo/sftpgo serve -c /etc/sftpgo
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+```
+
+启动与开机自启
+
+```bash
+systemctl enable sftpgo
+systemctl start sftpgo
+```
+
+## [smb](/smb) TODO: 用处不大了, 考虑废弃

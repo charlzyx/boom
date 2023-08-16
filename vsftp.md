@@ -1,5 +1,7 @@
 # FTP 设置
 
+# 我现在换这个了 [sftpgo](https://github.com/drakkan/sftpgo)
+
 ## 需求分析
 
 我的机器上外挂了一个硬盘到 `/titan` 作为家里网盘来使用

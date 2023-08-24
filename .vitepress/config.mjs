@@ -10,18 +10,11 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: "Arch", link: "/arch" },
-      { text: "截图们", link: "/screenshots" },
+      { text: "start", link: "/index" },
+      { text: "归档", link: "/archive" },
     ],
 
-    sidebar: [
-      { text: "Arch", link: "/arch" },
-      { text: "Proxmox VE 安装", link: "/pve-install" },
-      { text: "宿主机配置", link: "/pve" },
-      { text: "Samba 配置", link: "/smb" },
-      { text: "LuxDNS", link: "/luxdns" },
-      { text: "截图们", link: "/screenshots" },
-    ],
+    sidebar: [{ text: "起步", link: "/index" }],
 
     socialLinks: [{ icon: "github", link: "https://github.com/charlzyx/boom" }],
   },

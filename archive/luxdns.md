@@ -1,7 +1,7 @@
 # 要有光! 💡 LuxDNS Server 配置
 
 我愿称之为最强的 **LuxDNS 分流&透明代理**
-![LuxDNS 分流&透明代理 ](/assets/tproxy-split-by-dns.png)
+![LuxDNS 分流&透明代理 ](/assets/archive/tproxy-split-by-dns.png)
 
 > 参考: https://songchenwen.com/tproxy-split-by-dns
 >
@@ -24,9 +24,9 @@
 
 ## 分流效果
 
-![google](/assets/sgoogle.png)
-![baidu](/assets/sbaidu.png)
-![home](/assets/shome.png)
+![google](/assets/archive/sgoogle.png)
+![baidu](/assets/archive/sbaidu.png)
+![home](/assets/archive/shome.png)
 
 ## LXC 创建与基础配置 Debain 11
 
@@ -207,11 +207,11 @@ statistics:
   enabled: true
 filters:
   - enabled: false
-    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/archive/filter_1.txt
     name: AdGuard DNS filter
     id: 1
   - enabled: false
-    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/archive/filter_2.txt
     name: AdAway Default Blocklist
     id: 2
   - enabled: false

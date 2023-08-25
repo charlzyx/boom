@@ -41,7 +41,7 @@ PVEID: 111
 
 ### 基础配置
 
-参考 [这里](/pve-install)
+参考 [这里](/archive/pve-install)
 
 ### /etc/pve/lxc/[CT 容器 ID].conf
 

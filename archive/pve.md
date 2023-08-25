@@ -104,7 +104,7 @@ tailscale up --accept-dns=false --accept-routes=true  --advertise-routes=192.168
 
 ## sftpgo
 
-支持 SFTP/FTP/WebDav 还有 WebAdmin 可视化管理用户&权限, 比 ~~[vsftp](/vsftp)~~ 好用多了
+支持 SFTP/FTP/WebDav 还有 WebAdmin 可视化管理用户&权限, 比 ~~[vsftp](/archive/vsftp)~~ 好用多了
 
 安装与启动
 
@@ -145,6 +145,6 @@ systemctl enable sftpgo
 systemctl start sftpgo
 ```
 
-## [smb](/smb)
+## [smb](/archive/smb)
 
 > 用处不大, 考虑废弃

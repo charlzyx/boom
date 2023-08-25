@@ -56,7 +56,7 @@ USB3.2: 16TiB 外接硬盘
  WWW:光猫:LAN -> WAN:PVE 软路由:LAN -> WIFI 硬路由:LAN
 ```
 
-实际 DNS/流量转发主力在 LuxDNS 服务器配置, 在后续[LuxDNS](/luxdns) 展开, 先看下设计思路
+实际 DNS/流量转发主力在 LuxDNS 服务器配置, 在后续[LuxDNS](/archive/luxdns) 展开, 先看下设计思路
 
 ### DNS 流向
 

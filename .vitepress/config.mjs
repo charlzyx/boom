@@ -14,7 +14,10 @@ export default defineConfig({
       { text: "归档", link: "/archive" },
     ],
 
-    sidebar: [{ text: "起步", link: "/index" }],
+    sidebar: [
+      { text: "起步", link: "/index" },
+      { text: "路由配置", link: "/router" },
+    ],
 
     socialLinks: [{ icon: "github", link: "https://github.com/charlzyx/boom" }],
   },

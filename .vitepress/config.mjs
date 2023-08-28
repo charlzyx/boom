@@ -21,7 +21,12 @@ export default withMermaid({
       { text: "安装与配置", link: "/install" },
       { text: ".1 VM iKuai 安装与配置", link: "/ikuai" },
       { text: ".2 LXC clash 安装与配置", link: "/clash" },
+      { text: ".6 宿主机", link: "/home" },
       { text: ".3 LXC 网盘小鸡", link: "/cloud" },
+      { text: ".4 LXC 电视鸡", link: "/tv" },
+      { text: ".5 LXC Docker 鸡", link: "/docker" },
+      { text: ".87 LXC 下载鸡", link: "/bt" },
+      { text: "秀太 ShowTime", link: "/archive/screenshots" },
     ],
 
     socialLinks: [{ icon: "github", link: "https://github.com/charlzyx/boom" }],

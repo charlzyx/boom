@@ -5,6 +5,10 @@ lastUpdated: true
 
 # iKuai 虚拟机 `192.168.6.1`
 
+| 服务     | 端口 |
+| -------- | ---- |
+| 管理后台 | :80  |
+
 呃...， 从官网下载 iso 文件， 然后 GUI 安装就好了，记得给两张网卡, 其他没什么要注意的地方
 
 [爱快路由系统下载](https://www.ikuai8.com/component/download)
@@ -12,6 +16,28 @@ lastUpdated: true
 虚拟机配置如下， 主要注意一下两张网卡绑定的对应网口
 
 ![ikvm](/assets/ikvm.png)
+
+## /etc/pve/nodes/pve/qemu-server/101.conf
+
+```sh
+balloon: 512
+boot: order=scsi0;net0
+cores: 2
+cpu: x86-64-v2-AES
+memory: 2048
+meta: creation-qemu=8.0.2,ctime=1692712820
+name: iKuai
+net0: virtio=AA:BB:CC:DD:EE:FF,bridge=vmbr0
+net1: virtio=BB:CC:DD:EE:FF:01,bridge=vmbr1
+numa: 0
+onboot: 1
+ostype: l26
+scsi0: local-lvm:vm-101-disk-0,iothread=1,size=2G
+scsihw: virtio-scsi-single
+smbios1: uuid=df78ec88-779a-4690-91b8-4fbdc817345a
+sockets: 1
+vmgenid: ac0e3b98-95bf-495d-93b1-ac1f513ab503
+```
 
 ## iKuai 路由配置
 

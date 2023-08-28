@@ -7,11 +7,13 @@ lastUpdated: true
 
 clash 旁路由使用了 Debain 12 容器作为基础， 通过 AdGuardHome/mosdns/ShellClash 搭配使用， 改造为一个机智的科学路由
 
-| 名称        | 端口 | 说明                                                                |
-| ----------- | ---- | ------------------------------------------------------------------- |
-| AdGuardHome | 53   | 虽然他时常用来做广告拦截用， 但是作为一个带 GUI 的 DNS 服务器也不错 |
-| mosdns      | 3053 | 丝滑~ 区分域名的归属地， 来智能判断去查询哪个公共服务器             |
-| clash       | 1053 | 科学核心                                                            |
+| 服务        | 端口     | 说明                                                                |
+| ----------- | -------- | ------------------------------------------------------------------- |
+| AdGuardHome | :53      | 虽然他时常用来做广告拦截用， 但是作为一个带 GUI 的 DNS 服务器也不错 |
+| mosdns      | :3053    | 丝滑~ 区分域名的归属地， 来智能判断去查询哪个公共服务器             |
+| clash       | :1053    | 科学核心                                                            |
+| yacd        | :9999    | 看板 api                                                            |
+| yacd        | :9999/ui | 看板 UI                                                             |
 
 DNS 查询流程
 
@@ -24,6 +26,28 @@ DNS 查询流程
 ```
 
 ![td](/assets/clash/tproxy-split-by-dns.png)
+
+## /etc/pve/lxc/102.conf
+
+```sh
+arch: amd64
+cmode: shell
+cores: 4
+features: nesting=1
+hostname: clash
+memory: 1024
+nameserver: 223.6.6.6
+net0: name=eth0,bridge=vmbr0,gw=192.168.6.1,hwaddr=A6:F4:3D:4B:9E:AE,ip=192.168.6.2/24,type=veth
+onboot: 1
+ostype: debian
+parent: bbr
+rootfs: local-lvm:vm-102-disk-0,size=8G
+swap: 0
+unprivileged: 0
+lxc.cgroup.devices.allow: c 10:200 rwm
+lxc.cgroup2.devices.allow: c 10:200 rwm
+lxc.mount.entry: /dev/net dev/net none bind,create=dir
+```
 
 ## 准备模版
 

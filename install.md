@@ -88,4 +88,4 @@ systemctl disable postfix
 
 ### 5. 配置虚拟网卡 Linux Bridge
 
-![vmbr](/assets/vmbr.png)
+![vmbr](/assets/vmbr.png){data-zoomable}

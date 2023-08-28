@@ -25,7 +25,7 @@ DNS 查询流程
            -> (not cn) 1053 clash fake-ip dns
 ```
 
-![td](/assets/clash/tproxy-split-by-dns.png)
+![td](/assets/clash/tproxy-split-by-dns.png){data-zoomable}
 
 ## /etc/pve/lxc/102.conf
 
@@ -53,7 +53,7 @@ lxc.mount.entry: /dev/net dev/net none bind,create=dir
 
 数据中心 - pve -> local - CT 模板 -> 模板 -> Debain 12 -> 下载
 
-![dltpl](/assets/clash/dltpl.png)
+![dltpl](/assets/clash/dltpl.png){data-zoomable}
 
 ## 创建 CT
 
@@ -67,8 +67,8 @@ lxc.mount.entry: /dev/net dev/net none bind,create=dir
 
 **重要： 网络按照图示设置 IP: 192.168.6.2/24 网关: 192.168.6.1, 防火墙不要**
 
-![c1](/assets/clash/c1.png)
-![c2](/assets/clash/c2.png)
+![c1](/assets/clash/c1.png){data-zoomable}
+![c2](/assets/clash/c2.png){data-zoomable}
 
 需要注意的点就这些, 安装完成之后启动
 
@@ -405,5 +405,5 @@ DNS运行模式：	fake-ip
 
 `dig` 命令来查看分流和 fake-ip 效果
 
-![dd](/assets/clash/sbaidu.png)
-![dg](/assets/clash/sgoogle.png)
+![dd](/assets/clash/sbaidu.png){data-zoomable}
+![dg](/assets/clash/sgoogle.png){data-zoomable}

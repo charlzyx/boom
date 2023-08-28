@@ -1,7 +1,7 @@
 # 要有光! 💡 LuxDNS Server 配置
 
 我愿称之为最强的 **LuxDNS 分流&透明代理**
-![LuxDNS 分流&透明代理 ](/assets/archive/tproxy-split-by-dns.png)
+![LuxDNS 分流&透明代理 ](/assets/archive/tproxy-split-by-dns.png){data-zoomable}
 
 > 参考: https://songchenwen.com/tproxy-split-by-dns
 >
@@ -24,9 +24,9 @@
 
 ## 分流效果
 
-![google](/assets/archive/sgoogle.png)
-![baidu](/assets/archive/sbaidu.png)
-![home](/assets/archive/shome.png)
+![google](/assets/archive/sgoogle.png){data-zoomable}
+![baidu](/assets/archive/sbaidu.png){data-zoomable}
+![home](/assets/archive/shome.png){data-zoomable}
 
 ## LXC 创建与基础配置 Debain 11
 

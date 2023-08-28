@@ -15,7 +15,7 @@ lastUpdated: true
 
 虚拟机配置如下， 主要注意一下两张网卡绑定的对应网口
 
-![ikvm](/assets/ikvm.png)
+![ikvm](/assets/ikvm.png){data-zoomable}
 
 ## /etc/pve/nodes/pve/qemu-server/101.conf
 
@@ -56,31 +56,31 @@ set lan1 eth0
 # WAN 口先不用绑定，回车退出完成设置
 ```
 
-![ikshell](/assets/ikuai/ikshell.png)
+![ikshell](/assets/ikuai/ikshell.png){data-zoomable}
 
 ## 基础配置
 
 浏览器打开 `192.168.6.1`, 首次需要初始化 `admin` 管理员密码
 
 进入 `网络设置-内外网设置`，确认两张网卡绑定正确
-![iknets](/assets/ikuai/iknets.png)
+![iknets](/assets/ikuai/iknets.png){data-zoomable}
 
 ### WAN 口配置
 
 根据个人需求选择配置接入方式
 
-![ikwan](/assets/ikuai/ikwan.png)
+![ikwan](/assets/ikuai/ikwan.png){data-zoomable}
 
 ### LAN 口配置
 
-![iklan](/assets/ikuai/iklan.png)
+![iklan](/assets/ikuai/iklan.png){data-zoomable}
 
 ### DNS 与 DHCP
 
 > 注意：这两个地方的 192.168.6.2 是最终配置， 可以先写成 192.168.6.1 先测试 iKuai 配置是否能够联网
 
-![ikdns](/assets/ikuai/ikdns.png)
-![ikdhcp](/assets/ikuai/ikdhcp.png)
+![ikdns](/assets/ikuai/ikdns.png){data-zoomable}
+![ikdhcp](/assets/ikuai/ikdhcp.png){data-zoomable}
 
 ### 流控分流
 
@@ -99,7 +99,7 @@ DNS 是一个把域名 `www.baidu.com` 翻译为 `39.23.112.233` 的服务器
 1. 是为了让终端的网关看起来还是路由管理后台， 符合直觉
 2. 是 LXC 容器是一些静态 IP 不在 DHCP 网段， 不能通过 DHCP 改变指向， 虽然手动指定也可以， 但我更习惯都指向主网关， 即 `192.168.6.1`
 
-![ikflow](/assets/ikuai/ikflow.png)
+![ikflow](/assets/ikuai/ikflow.png){data-zoomable}
 
 网关和 DNS 这两个配置并没有强关联性，之所以我们要在 `192.168.6.2` 的机器上配置 `AdGuardHome->mosdns -> clash dns`3 层 DNS 服务
 

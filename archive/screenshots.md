@@ -1,13 +1,13 @@
 # 截图们
 
-![pve](/assets/archive/pve.png)
-![go](/assets/archive/go.png)
-![ikuai](/assets/archive/ikuai.png)
-![docker](/assets/archive/docker.png)
-![adg](/assets/archive/adg.png)
-![adg_settings](/assets/archive/adg_settings.png)
-![yacd](/assets/archive/yacd.png)
-![xl](/assets/archive/xl.png)
-![alist](/assets/archive/alist.png)
-![tv](/assets/archive/tv.png)
-![ftp](/assets/archive/ftp.png)
+![pve](/assets/archive/pve.png){data-zoomable}
+![go](/assets/archive/go.png){data-zoomable}
+![ikuai](/assets/archive/ikuai.png){data-zoomable}
+![docker](/assets/archive/docker.png){data-zoomable}
+![adg](/assets/archive/adg.png){data-zoomable}
+![adg_settings](/assets/archive/adg_settings.png){data-zoomable}
+![yacd](/assets/archive/yacd.png){data-zoomable}
+![xl](/assets/archive/xl.png){data-zoomable}
+![alist](/assets/archive/alist.png){data-zoomable}
+![tv](/assets/archive/tv.png){data-zoomable}
+![ftp](/assets/archive/ftp.png){data-zoomable}

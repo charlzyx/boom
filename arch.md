@@ -230,7 +230,7 @@ sequenceDiagram
 
 - [基于 DNS 的内网透明代理分流方案](https://songchenwen.com/tproxy-split-by-dns)
 - [ahuacate/pve-host](https://github.com/ahuacate/pve-host#22-pve-host---dual-nic-pfsense-support)
-- [ahuacate/pve-host](https://github.com/ahuacate/pve-host#22-pve-host---dual-nic-pfsense-support)
+- [ahuacate/pve-homelab](https://github.com/ahuacate/pve-homelab#prerequisites)
 - [DIY Linux Router Part 3: PPPOE and Routing](https://www.sherbers.de/diy-linux-router-part-3-pppoe-and-routing/)
 - [debian 搭建简易路由笔记（未完成外网部分）](https://www.jianshu.com/p/d7a070ee0378)
 - [nftables 初体验](https://owent.net/2020/2002.html)

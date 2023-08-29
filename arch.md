@@ -3,11 +3,38 @@ title: Arch 架构
 lastUpdated: true
 ---
 
-# BoomLab 整体架构
+# BoomLab
 
-NAS × 软路由配置指北, 由 Proxmox VE 强力驱动.
+> 折腾记录，分享给大家也方便自己回头找
+
+**iKuai 「×」 clash 实现自然丝滑的分流体验;**
+
+**基于绿色节能 ~~至少理论上~~ LXC 容器技术，最大化的利用 CPU/内存资源 搭建 NAS 应用; 同时实现了应用分层管理，加上快照可以随意折腾**
+
+![ram](/assets/ram.png)
+![nav](/assets/nav.png)
+
+## 整体思路
+
+科学部分:
+
+- iKuai 主路由: 简单好用的管理后台，优雅的分流配置
+- LXC 旁路由： AdGuardHome 「×」 mosdns 「×」 ShellClash 自然丝滑的分流体验
+
+LXC 容器部分:
+
+- 网盘小鸡： FTP/SFTP/WebDav/AList
+- Docker 小鸡： 套娃 docker
+- 电视鸡： jellyfin
+- 下载鸡： qBittorrent 「×」 NAS 迅雷
+
+宿主机:
+
+- tailscale 外网访问
 
 ## 硬件配置
+
+USB 3.2 外挂 16TB 单机械硬盘, 主机配置如下：
 
 ```sh
 root@pve
@@ -24,7 +51,9 @@ GPU: Intel Elkhart Lake [UHD Graphics Gen11 16EU]
 Memory: 2557MiB / 7777MiB
 ```
 
-## 硬件结构
+## 科学核心
+
+### 硬件拓扑
 
 :::tip 物理接口， ~~划线~~ 代表未使用
 
@@ -46,29 +75,19 @@ graph TD
   A[光猫:桥接模式]
   B[软路由:路由模式]
   C[WIFI路由器:桥接模式]
-  D[终端]
+  D1[手机]
+  D2[电脑]
+  D3[平板]
+  D4[终端...]
   A -- LAN1:ETH1 --> B
   B -- ETH0:LAN1 --> C
-  C -- WIFI --> D
+  C -- WIFI --> D1
+  C -- WIFI --> D2
+  C -- WIFI --> D3
+  C -- WIFI --> D4
 ```
 
-## 虚拟机规划
-
-众所周知， PVE 8.0 底层系统是 Debain 12， 所以我们的 LXC 容器都使用 Debain ~~并没有什么因果关系，只是为了方便~~
-
-同时， 防火墙配置靠 iKuai 所以 PVE 中的 数据中心/宿主机节点/LXC 全部防火墙都为禁用
-
-| 名称   | 类型   | 说明                      |
-| ------ | ------ | ------------------------- |
-| pve    | 宿主机 | 母鸡                      |
-| iKuai  | VM     | 小鸡:主路由               |
-| clash  | LXC    | 小鸡:科学路由+DNS         |
-| cloud  | LXC    | 文件分享 smb/sftpgo/alist |
-| tv     | LXC    | 电视鸡                    |
-| docker | LXC    | CT 套娃 docker 鸡         |
-| bt     | LXC    | 下载鸡 xunlei/bt          |
-
-## 分流策略
+### 分流策略
 
 :::tip 分流策略
 
@@ -78,7 +97,7 @@ graph TD
 
 :::
 
-### 留学思路
+### 网络拓扑
 
 ```mermaid
 graph TD
@@ -100,7 +119,7 @@ graph TD
   A3 --> D
 ```
 
-### 留学详解
+#### 科学详解
 
 [查看大图](http://mermaid-plugin.tooltag.cn/view/#eyJjb2RlIjoic2VxdWVuY2VEaWFncmFtXG4gIHBhcnRpY2lwYW50IEEgYXMg5a6i5oi356uvXG4gIHBhcnRpY2lwYW50IEIgYXMg54ix5b-r5Li76Lev55SxIDE5Mi4xNjguNi4xXG4gIHBhcnRpY2lwYW50IEMgYXMgQ2xhc2ggJiBETlMgMTkyLjE2OC42LjJcbiAgcGFydGljaXBhbnQgRjEgYXMg6auY6ZOB8J-ahCBETlMgMjIzLjYuNi42XG4gIHBhcnRpY2lwYW50IEYyIGFzIOacuuWcuvCfm6sgRE5TIDguOC44LjhcbiAgcGFydGljaXBhbnQgRSBhcyBXQU4g5Ye65Y-jXG4gIHBhcnRpY2lwYW50IEQgYXMg5py65Zy6XG4gIEEgLS0-PiBCOiDov5nkuKrnvZHlnYDnmoQgaXAg5piv5LuA5LmI5ZWKXG4gIEIgLS0-PiBDOiDmmK_ku4DkuYjlkaJcbiAgTm90ZSBvdmVyIEMsQzogQWRHdXJhZEhvbWU6NTMg5L2g5biu5oiR55yL55yLXG4gIGFsdDog5ZaU5piv5bm_5ZGK5ZWKXG4gICAgQyAtPj4gQTogMC4wLjAuMCDlkIPlsY7lkKfkvaBcbiAgZWxzZTog57un57ut5piCXG4gIE5vdGUgb3ZlciBDLEM6IG1vc2RuczogMzA1MyDkvaDluK7miJHnnIvnnItcbiAgQyAtLT4-IEM6IOWkp-WTpe-8gVxuICByZWN0IHJnYigxOTEsIDIyMywgMjU1KVxuICAgIGFsdDog5ZaU5pivIHd3dy5iYWlkdS5jb20g6L-Z55u05o6l6Zeu6Zi_6YeM5bCx55-l6YGT5LqGXG4gICAgICAgIEMgLS0-PiBGMTog55m-5bqm55qEIGlwIOaYr-S7gOS5iFxuICAgICAgICBGMSAtLT4-IEM6IDM5Lnh4Lnh4Lnh4XG4gICAgZWxzZTog5ZaU5pivIHd3dy5nb29nbGUuY29tIOmXrumXruenkeWtpuWutkROU1xuICAgICAgICBDIC0tPj4gRjI6IOeLl-WTpeeahCBpcCDmmK_ku4DkuYhcbiAgICAgICAgTm90ZSBvdmVyIEYyLEM6IGNsYXNoOiAxMDUzIOWYmO-8jOWwj-eCueWjsO-8gVxuICAgICAgICBGMiAtLT4-IEM6ICDmiJHlhYjnu5nkvaDkuKrlgYfnmoTllYogMTk4LjE4LjAueHh4IDxici8-IOS4gOS8muS9oOaLv-i_meS4quadpemXruaIkVxuICAgIGVuZFxuICBlbmRcbiAgQyAtLT4-IEI6IOe7meS9oFxuICBCIC0tPj4gQTog57uZ5L2gXG4gIEEgLT4-IEI6IOefpemBk-WSr--8jCDluK7miJHlj5HkuKrlv6vpgJLlkaJcbiAgTm90ZSBvdmVyIEIsQjogaUt1YWkg5YiG5rWBOiDorqnmiJHlurflurfkvaDmmK_osIFcbiAgQiAtPj4gQjog5aSn5ZOl77yBXG4gIHJlY3QgcmdiKDE5MSwgMjIzLCAyNTUpXG4gICAgYWx0OiDllpTmmK8gMC4wLjAuMCDllYpcbiAgICAgICAgQiAtPj4gQTog5ZCD5bGO5ZCn5L2gXG4gICAgZWxzZTog5ZaU5pivIDE5Mi4xNjguNi44NyDov4Xlk6XlhL_llYpcbiAgICAgICAgQiAtPj4gRTog8J-ahCDpq5jpk4HotbDkvaBcbiAgICAgICAgRSAtPj4gQjog5oiR6IKl5p2l5LqGXG4gICAgZWxzZTog5ZaU5pivIDE5Mi4xNjguNi4xMDEgZnJlZW1hbiDllYpcbiAgICAgICAgTm90ZSBvdmVyIEIsQzog56eR5a2m5a625oyH5oyH6Lev5ZGiXG4gICAgICAgIEIgLT4-IEM6IOWkp-WTpe-8gVxuICAgICAgICByZWN0IHJnYigyMDAsIDE1MCwgMjU1LCAuNylcbiAgICAgICAgICBhbHQ6IOWWlOaYryAzOS54eHgueHh4Lnh4XG4gICAgICAgICAgICBDIC0-PiBFOiDwn5qEIOmrmOmTgei1sOS9oFxuICAgICAgICAgICAgRSAtPj4gQjogIOaIkeiCpeadpeS6hlxuICAgICAgICAgIGVsc2U6IOWWlOaYryAxOTguMTguMC54eHgg5L2g5bCP5a2Q77yBXG4gICAgICAgICAgICBDIC0-PiBEOiDwn5urIOi1t-mjnuWSr1xuICAgICAgICAgICAgRCAtPj4gQjog5oiR6IKl5p2l5LqGXG4gICAgICAgICAgZW5kXG4gICAgICAgIGVuZFxuICAgIGVuZFxuICBlbmRcbiAgQiAtPj4gQTog5oiR5Zue5p2l5LqGXG4gIGVuZFxuIiwibWVybWFpZCI6IntcbiAgXCJ0aGVtZVwiOiBcImRlZmF1bHRcIlxufSIsInVwZGF0ZUVkaXRvciI6dHJ1ZSwiYXV0b1N5bmMiOnRydWUsInVwZGF0ZURpYWdyYW0iOnRydWV9)
 
@@ -161,9 +180,9 @@ sequenceDiagram
 
 ```
 
-## 具体配置
+### 具体配置表
 
-### PVE 网桥配置
+#### PVE 网桥配置
 
 > 参考 [ahuacate/pve-host](https://github.com/ahuacate/pve-host#22-pve-host---dual-nic-pfsense-support)
 
@@ -180,7 +199,7 @@ sequenceDiagram
 | Comment        | `ETH0 as LAN`                    | `ETH1 as WAN`                    |
 | MTU            | 1500                             | 1500                             |
 
-### 路由配置一览
+### 路由鸡配置一览
 
 > 参考 [ahuacate/pve-homelab](https://github.com/ahuacate/pve-homelab#prerequisites)
 
@@ -194,7 +213,7 @@ sequenceDiagram
 | iKuai | VM   | `LAN`             | **192.168.6.1/24** | **192.168.6.2** by 端口分流 | 192.168.6.2  | 小鸡:主路由, ip 绑定在 iKuai 控制台 |
 | iKuai | VM   | `WAN` PPPOE       | DHCP               | DHCP                        | DHCP         | 小鸡:主路由, 都是在管理界面配置     |
 
-### 小鸡应用路由配置一览
+### 应用鸡配置一览
 
 小鸡们都是只需要配置一个网卡 LAN 就可以
 

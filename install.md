@@ -12,6 +12,8 @@ lastUpdated: true
 - PVE 官网 https://enterprise.proxmox.com
 - U 盘（优盘）安装 Proxmox VE 图文教程 https://www.moewah.com/archives/2497.html
 - Proxmox VE（PVE）安装保姆级图文教程 https://blog.viinas.com/247
+- 榨干小主机，all in one 家庭软路由方案 篇一：PVE 虚拟化环境搭建与调试入门
+  https://post.smzdm.com/p/a9gvp557/
 
 ## Debain / PVE 宿主机安装后的配置
 

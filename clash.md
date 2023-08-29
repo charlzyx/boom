@@ -397,7 +397,7 @@ DNS运行模式：	fake-ip
 
 其他保持默认即可
 
-## 恭喜 🎉
+## 恭喜你 FREEMAN 🎉
 
 这时候可以将我们刚才 iKuai 的 DNS 修改为 `192.168.6.2` 来验证科学是否成功.
 
@@ -407,3 +407,7 @@ DNS运行模式：	fake-ip
 
 ![dd](/assets/clash/sbaidu.png){data-zoomable}
 ![dg](/assets/clash/sgoogle.png){data-zoomable}
+
+### 我可不知道什么是机场
+
+[大米](https://www.bigme.pro/user#/register?code=X8gngfZz)

@@ -13,7 +13,7 @@ lastUpdated: true
 
 跑个 docker 套娃
 
-## ## /etc/pve/lxc/205.conf
+## /etc/pve/lxc/205.conf
 
 ```sh
 arch: amd64

@@ -110,11 +110,6 @@ DNS 是一个把域名 `www.baidu.com` 翻译为 `39.23.112.233` 的服务器
 
 非必要， 不开也行
 
-不开启 DHCP; 客户端使用 SLAAC 方式连接;
-
-> 在 Jellyfin 小鸡中，开启 DHCPv6 的话，就算网络 IPv6 设置为 静态留空，也会强制开启 IPv6 链接
-> 但链接 jellyfin repo 会非常慢， 所以就在使用的地方 SLAAC 按需开启
-
 ![IPv6](/assets/ikuai/ipv6.png)
 
 ### 完结撒花

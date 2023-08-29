@@ -223,3 +223,19 @@ sequenceDiagram
 | tv     | CT   | `LAN`             | 192.168.6.4/24   | 192.168.6.1 | 静态:留白不填 | 使用主机设置 | 电视鸡                    |
 | docker | CT   | `LAN`             | 192.168.6.5/24   | 192.168.6.1 | 静态:留白不填 | 使用主机设置 | CT 套娃 docker 鸡         |
 | bt     | CT   | `LAN`             | 192.168.6.208/24 | 192.168.6.1 | SLAAC         | 使用主机设置 | 下载鸡 xunlei/bt          |
+
+## 参考文档
+
+> 感谢大佬们的文章
+
+- [基于 DNS 的内网透明代理分流方案](https://songchenwen.com/tproxy-split-by-dns)
+- [ahuacate/pve-host](https://github.com/ahuacate/pve-host#22-pve-host---dual-nic-pfsense-support)
+- [ahuacate/pve-host](https://github.com/ahuacate/pve-host#22-pve-host---dual-nic-pfsense-support)
+- [DIY Linux Router Part 3: PPPOE and Routing](https://www.sherbers.de/diy-linux-router-part-3-pppoe-and-routing/)
+- [debian 搭建简易路由笔记（未完成外网部分）](https://www.jianshu.com/p/d7a070ee0378)
+- [nftables 初体验](https://owent.net/2020/2002.html)
+- [LXC 直通核显](https://northes.io/posts/pve/lxc-dri/)
+- [Proxmox LXC 挂载目录及权限设置](https://www.haiyun.me/archives/1419.html)
+- [配置 Debian 路由器双 WAN 接入 ](https://blog.ismisv.com/2022/11/dual-wan-internet-access/)
+- [使用 Debian 作为路由器](https://blog.bling.moe/post/3/)
+- [Debian 服务器变成软路由--Part1](https://www.bilibili.com/read/cv16214037/)

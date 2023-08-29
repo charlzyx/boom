@@ -89,3 +89,10 @@ systemctl disable postfix
 ### 5. 配置虚拟网卡 Linux Bridge
 
 ![vmbr](/assets/vmbr.png){data-zoomable}
+
+:::danger LXC 容器创建注意事项
+
+1. 注意 **无特权容器** 的勾选与否； 虽然可以通过 /etc/pve/lxc/[id].conf 来修改， 但是修改之后的可能会出现权限问题；
+2. 磁盘容能只能增加不能减小，所以尽量给比较小的值
+
+:::

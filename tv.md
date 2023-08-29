@@ -9,7 +9,7 @@ lastUpdated: true
 | -------- | ----- |
 | Jellyfin | :8096 |
 
-在这个容器中，主要是 jellyfin 并使用外挂硬盘
+主要是 jellyfin 的安装,使用外挂硬盘, 我的显卡是 Intel 核显
 
 ## ## /etc/pve/lxc/204.conf
 
@@ -21,11 +21,11 @@ features: nesting=1
 hostname: tv
 memory: 2048
 mp0: /titan/space/media,mp=/media
-net0: name=eth0,bridge=vmbr0,gw=192.168.6.1,hwaddr=9A:69:C4:D4:12:0B,ip=192.168.6.4/24,type=veth
+net0: name=eth0,bridge=vmbr0,gw=192.168.6.1,hwaddr=7A:82:AC:72:7E:DA,ip=192.168.6.4/24,type=veth
 ostype: debian
-rootfs: local-lvm:vm-204-disk-0,size=4G
+rootfs: local-lvm:vm-204-disk-1,size=10G
 swap: 0
-# 开启特权和下面的配置是显卡直通
+# 开启特权和下面的配置是为了显卡直通
 unprivileged: 0
 lxc.cgroup.devices.allow: a
 lxc.cgroup2.devices.allow: c 226:0 rwm
@@ -36,7 +36,7 @@ lxc.mount.entry: /dev/dri/renderD128 dev/dri/renderD128 none bind,optional,creat
 
 ## 安装脚本
 
-> https://jellyfin.org/docs/general/installation/linux#debian
+> [官方文档](https://jellyfin.org/docs/general/installation/linux#debian)
 
 ```sh
 curl https://repo.jellyfin.org/install-debuntu.sh |  bash
@@ -103,9 +103,10 @@ vainfo: Supported profile and entrypoints
 > 不然生成媒体库缩略图有方块
 
 ```sh
-apt install fonts-noto-cjk
+apt install fonts-noto-cjk-extra
 ```
 
 ## 配置硬解与中文字幕字体
 
-备用字体： /usr/share/fonts/opentype/noto
+![硬件解码](/assets/tv/hdcode.png)
+![配置中文字体](/assets/tv/jf.png)

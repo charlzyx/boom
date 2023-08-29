@@ -13,6 +13,10 @@ lastUpdated: true
 | ftp    | :21       |
 | webdav | :8080/dav |
 
+:::tips 权限问题
+可能会遇到挂载磁盘的权限问题, [我的方案](/home)中通过 `777` 简单粗暴的跳过的这个麻烦的问题
+:::
+
 ## /etc/pve/lxc/203.conf
 
 ```sh
@@ -22,6 +26,7 @@ cores: 2
 features: nesting=1
 hostname: titan
 memory: 1024
+# 硬盘挂载雨映射
 mp0: /titan/space,mp=/space
 mp1: /titan/cloud,mp=/cloud
 net0: name=eth0,bridge=vmbr0,gw=192.168.6.1,hwaddr=32:68:A9:89:9E:BE,ip=192.168.6.3/24,type=veth
@@ -29,9 +34,6 @@ ostype: debian
 rootfs: local-lvm:vm-203-disk-0,size=2G
 swap: 0
 unprivileged: 1
-lxc.cgroup.devices.allow: c 10:200 rwm
-lxc.cgroup2.devices.allow: c 10:200 rwm
-lxc.mount.entry: /dev/net dev/net none bind,create=dir
 ```
 
 ## 用户创建

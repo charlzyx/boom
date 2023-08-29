@@ -37,12 +37,12 @@ features: nesting=1
 hostname: clash
 memory: 1024
 nameserver: 223.6.6.6
-net0: name=eth0,bridge=vmbr0,gw=192.168.6.1,hwaddr=A6:F4:3D:4B:9E:AE,ip=192.168.6.2/24,type=veth
+net0: name=eth0,bridge=vmbr0,gw=192.168.6.1,hwaddr=82:6B:88:1C:F0:E9,ip=192.168.6.2/24,ip6=auto,type=veth
 onboot: 1
 ostype: debian
-parent: bbr
-rootfs: local-lvm:vm-102-disk-0,size=8G
+rootfs: local-lvm:vm-202-disk-0,size=8G
 swap: 0
+# 开启特权与 tun 权限，clash tun 模式会需要
 unprivileged: 0
 lxc.cgroup.devices.allow: c 10:200 rwm
 lxc.cgroup2.devices.allow: c 10:200 rwm

@@ -1,16 +1,16 @@
 ---
-title: .87 LXC 下载鸡
+title: .208 LXC 下载鸡
 lastUpdated: true
 ---
 
-# 下载鸡 `192.168.6.87`
+# 下载鸡 `192.168.6.208`
 
 | 服务        | 端口  |
 | ----------- | ----- |
 | NAS 迅雷    | :2345 |
 | qBittorrent | :8080 |
 
-## /etc/pve/lxc/204.conf
+## /etc/pve/lxc/208.conf
 
 ```sh
 arch: amd64
@@ -20,7 +20,7 @@ features: nesting=1
 hostname: bt
 memory: 1024
 mp0: /titan/space/downloads,mp=/downloads
-net0: name=eth0,bridge=vmbr0,gw=192.168.6.1,hwaddr=EA:38:53:6D:54:B8,ip=192.168.6.87/24,type=veth
+net0: name=eth0,bridge=vmbr0,gw=192.168.6.1,hwaddr=EA:38:53:6D:54:B8,ip=192.168.6.208/24,ip6=auto,type=veth
 ostype: debian
 rootfs: local-lvm:vm-208-disk-0,size=4G
 swap: 0

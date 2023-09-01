@@ -9,7 +9,7 @@ lastUpdated: true
 | --------- | ------------- |
 | home-page | :3000         |
 | portainer | https://:9000 |
-| prowlarr  | 9696          |
+| prowlarr  | :9696         |
 
 跑个 docker 套娃
 
@@ -29,7 +29,7 @@ net0: name=eth0,bridge=vmbr0,gw=192.168.6.1,hwaddr=16:7D:17:7F:B1:CE,ip=192.168.
 ostype: debian
 rootfs: local-lvm:vm-205-disk-0,size=20G
 swap: 0
-unprivileged: 1
+unprivileged: 0
 ```
 
 ## 安装脚本
@@ -49,6 +49,21 @@ sh get-docker.sh
 version: "3.1"
 
 services:
+  homepage:
+    image: charlzgg/home-page:latest
+    container_name: homepage
+    environment:
+      - TZ=Asia/Shanghai
+      - NEXT_PUBLIC_HOME_HEADER_TITLE=HOME
+      - NEXT_PUBLIC_HOME_TITLE=六六の家
+    volumes:
+      - /etc/home-page/services.json:/app/services.json
+      - /titan/cloud:/titan/cloud
+      - /titan/space:/titan/space
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+
   portainer:
     image: portainer/portainer:latest
     container_name: portainer
@@ -75,8 +90,3 @@ services:
       - 9696:9696
     restart: unless-stopped
 ```
-
-## home-page
-
-这是我 fork 大佬改自用的
-[charlzyx/home-page](https://github.com/charlzyx/home-page)

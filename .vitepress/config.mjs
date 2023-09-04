@@ -28,7 +28,7 @@ export default withMermaid({
       { text: "6.5 LXC Docker 鸡", link: "/docker" },
       { text: "6.208 LXC 下载鸡", link: "/bt" },
       { text: "6.? Home Assistant", link: "/ha" },
-      { text: "6.33  RTSP 监控视频流录制", link: "/ha" },
+      { text: "6.33  RTSP 监控视频流录制", link: "/record" },
       { text: "秀太 ShowTime", link: "/screenshots" },
     ],
     footer: {

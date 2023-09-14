@@ -5,76 +5,124 @@ lastUpdated: true
 
 # 网盘小鸡 `192.168.6.3`
 
-在这个容器中， 我们将会把 USB 外挂的硬盘映射为网络存储， 提供 SMB/FTP/WebDav 以及 WEB 管理界面
+在这个容器中， 我们将会把 USB 外挂的硬盘映射为网络存储，借助 alist/sftpgo/samba 提供 SMB/FTP/WebDav 以及 WEB 管理界面
 
-| 服务   | 端口      |
-| ------ | --------- |
-| smb    | :445      |
-| ftp    | :21       |
-| webdav | :8080/dav |
+| 服务       | 端口      |
+| ---------- | --------- |
+| smb        | :445      |
+| ftp        | :21       |
+| webdav     | :8080/dav |
+| webdav web | :8081/dav |
+| alist      | :5244     |
 
 :::tips 权限问题
 可能会遇到挂载磁盘的权限问题, [我的方案](/home)中通过 `777` 简单粗暴的跳过的这个麻烦的问题
 :::
 
-## /etc/pve/lxc/203.conf
+## /etc/pve/lxc/103.conf
 
 ```sh
 arch: amd64
 cmode: shell
-cores: 2
-features: nesting=1
+cores: 4
 hostname: titan
 memory: 1024
-# 硬盘挂载雨映射
 mp0: /titan/space,mp=/space
 mp1: /titan/cloud,mp=/cloud
-net0: name=eth0,bridge=vmbr0,gw=192.168.6.1,hwaddr=32:68:A9:89:9E:BE,ip=192.168.6.3/24,type=veth
-ostype: debian
-rootfs: local-lvm:vm-203-disk-0,size=2G
+net0: name=eth0,bridge=vmbr0,gw=192.168.6.1,hwaddr=EA:77:1D:26:AE:B8,ip=192.168.6.3/24,ip6=auto,type=veth
+ostype: alpine
+rootfs: local-lvm:vm-103-disk-0,size=10G
 swap: 0
-unprivileged: 1
 ```
 
-## 用户创建
+## 前置任务
+
+### 依赖安装
+
+```sh
+# glibc 兼容, sftpgo 需要
+apk add gcompat
+```
+
+### 用户创建
 
 这几个用户是给 `smb` 用的
 
 ```sh
 # smb 用户组
-groupadd -g 1000 smb
 # 下载盘管理员
-useradd -u 1001 -g smb -s /usr/sbin/nologin -M space
+useradd -u 1001 -s /usr/sbin/nologin -M space
 # 同步盘管理员
-useradd -u 1002 -g smb -s /usr/sbin/nologin -M cloud
+useradd -u 1002 -s /usr/sbin/nologin -M cloud
 # 电视机用的
-useradd -u 1003 -g smb -s /usr/sbin/nologin -M tv
+useradd -u 1003 -s /usr/sbin/nologin -M tv
 ```
 
 # AList 安装与配置
 
-我选择一键脚本
+自动安装脚本不支持 Alpine, 选择[手动安装方式](https://alist.nn.ci/zh/guide/install/manual.html#%E6%89%8B%E5%8A%A8%E8%BF%90%E8%A1%8C)
 
 ```sh
-curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install
+mkdir -p /opt/alist && cd /opt/alist
+wget https://ghproxy.com/https://github.com/alist-org/alist/releases/download/v3.27.0/alist-linux-musl-amd64.tar.gz
+tar -zxvf ./alist-linux-musl-amd64.tar.gz
+
+# 设置管理员密码
+./alist admin set NEW_PASSWORD
+
 ```
 
-安装完成后根据提示修改管理员密码，接着打开 `192.168.6.3:5244` 进行管理
+服务文件 `/etc/init.d/alist`
+
+```sh
+#!/sbin/openrc-run
+supervisor=supervise-daemon
+USER=root
+GROUP=root
+name="Alist service"
+description="Alist: Pan Server"
+command=/opt/alist/alist
+command_args="--data /opt/alist/data server"
+name=$(basename $(readlink -f $command))
+supervise_daemon_args="--stdout /var/log/${name}.log --stderr /var/log/${name}.err"
+
+
+depend() {
+	After=syslog.target network-online.target
+}
+```
 
 # SFTPGO 安装与配置
 
-> 稍微有点麻烦 https://github.com/drakkan/sftpgo/blob/main/docs/repo.md
+同样是手动安装, 安装方法类似
 
 ```sh
-curl -sS https://ftp.osuosl.org/pub/sftpgo/apt/gpg.key | gpg --dearmor -o /usr/share/keyrings/sftpgo-archive-keyring.gpg
-# Debain 12 代号
-CODENAME=`bookworm`
-echo "deb [signed-by=/usr/share/keyrings/sftpgo-archive-keyring.gpg] https://ftp.osuosl.org/pub/sftpgo/apt ${CODENAME} main" | tee /etc/apt/sources.list.d/sftpgo.list
-apt update
-apt install sftpgo
+mkdir -p /opt/sftpgo && cd /opt/sftpgo
+wget https://ghproxy.com/https://github.com/drakkan/sftpgo/releases/download/v2.5.4/sftpgo_v2.5.4_linux_x86_64.tar.xz
+tar -xf ./sftpgo_v2.5.4_linux_x86_64.tar.xz
 ```
 
-配置文件在 `/etc/sftpgo/sftpgo.json`
+服务文件 `/etc/init.d/sftpgo`
+
+```sh
+#!/sbin/openrc-run
+supervisor=supervise-daemon
+USER=root
+GROUP=root
+name="sftpgo service"
+description="Sftpgo: ftp Server"
+command=/opt/sftpgo/sftpgo
+command_args=" serve -c /opt/sftpgo/ "
+name=$(basename $(readlink -f $command))
+supervise_daemon_args="--stdout /var/log/${name}.log --stderr /var/log/${name}.err"
+
+
+depend() {
+	After=syslog.target network.target
+}
+```
+
+配置文件在 `/opt/sftpgo/sftpgo.json`
 
 :::details 我的配置
 
@@ -499,12 +547,10 @@ apt install sftpgo
 apt 安装即可, 安装之后设置开机自启动
 
 ```sh
-apt install sambda
-systemctl enable smbd
-systemctl start smbd
+apk add sambda
 ```
 
-添加用户（需要现在系统中添加用户）, 根据提示设置用户名密码
+添加用户（上面系统中添加的用户）, 根据提示设置用户名密码
 
 ```sh
 smbpasswd space
@@ -578,3 +624,11 @@ smbpasswd tv
 ```
 
 :::
+
+## 添加服务开机自启
+
+```sh
+rc-update add alist
+rc-update add sftpgo
+rc-update add samba
+```

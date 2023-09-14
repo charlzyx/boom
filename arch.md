@@ -11,7 +11,7 @@ lastUpdated: true
 
 **基于绿色节能 ~~至少理论上~~ LXC 容器技术，最大化的利用 CPU/内存资源 搭建 NAS 应用; 同时实现了应用分层管理，加上快照可以随意折腾**
 
-![ram](/assets/ram.png)
+![ram](/assets/pve.png)
 ![nav](/assets/nav.png)
 
 ## 整体思路
@@ -24,13 +24,13 @@ lastUpdated: true
 LXC 容器部分:
 
 - 网盘小鸡： FTP/SFTP/WebDav/AList
-- Docker 小鸡： 套娃 docker
-- 电视鸡： jellyfin
-- 下载鸡： qBittorrent 「×」 NAS 迅雷
+- Docker 鸡： 套娃 docker
+- 电视鸡：jellyfin 硬解
+- 录像鸡：ffmpeg 录制摄像头视频
+- 下载鸡：qBittorrent 「×」 NAS 迅雷
+- 网关鸡: ddns-go 「×」 nginx 「×」 tailscale 外网访问
 
 宿主机:
-
-- tailscale 外网访问
 
 ## 硬件配置
 
@@ -43,9 +43,6 @@ OS: Proxmox VE 8.0.3 x86_64
 Host: EHL30 V1.0
 Kernel: 6.2.16-3-pve
 Uptime: 10 hours, 3 mins
-Packages: 1315 (dpkg)
-Shell: zsh 5.9
-Terminal: /dev/pts/0
 CPU: Intel Celeron J6412 (4) @ 2.600GHz
 GPU: Intel Elkhart Lake [UHD Graphics Gen11 16EU]
 Memory: 2557MiB / 7777MiB
@@ -217,12 +214,14 @@ sequenceDiagram
 
 小鸡们都是只需要配置一个网卡 LAN 就可以
 
-| 名称   | 类型 | 网卡 Linux Bridge | IPv4/CIDR        | 网关        | IPv6          | DNS          | 备注                      |
-| ------ | ---- | ----------------- | ---------------- | ----------- | ------------- | ------------ | ------------------------- |
-| cloud  | CT   | `LAN`             | 192.168.6.3/24   | 192.168.6.1 | 静态:留白不填 | 使用主机设置 | 网盘小鸡 smb/sftpgo/alist |
-| tv     | CT   | `LAN`             | 192.168.6.4/24   | 192.168.6.1 | 静态:留白不填 | 使用主机设置 | 电视鸡                    |
-| docker | CT   | `LAN`             | 192.168.6.5/24   | 192.168.6.1 | 静态:留白不填 | 使用主机设置 | CT 套娃 docker 鸡         |
-| bt     | CT   | `LAN`             | 192.168.6.208/24 | 192.168.6.1 | SLAAC         | 使用主机设置 | 下载鸡 xunlei/bt          |
+| 名称    | 类型 | 网卡 Linux Bridge | IPv4/CIDR        | 网关        | IPv6          | DNS          | 备注                      |
+| ------- | ---- | ----------------- | ---------------- | ----------- | ------------- | ------------ | ------------------------- |
+| cloud   | CT   | `LAN`             | 192.168.6.3/24   | 192.168.6.1 | 静态:留白不填 | 使用主机设置 | 网盘小鸡 smb/sftpgo/alist |
+| tv      | CT   | `LAN`             | 192.168.6.4/24   | 192.168.6.1 | 静态:留白不填 | 使用主机设置 | 电视鸡                    |
+| docker  | CT   | `LAN`             | 192.168.6.5/24   | 192.168.6.1 | 静态:留白不填 | 使用主机设置 | CT 套娃 docker 鸡         |
+| gpu     | CT   | `LAN`             | 192.168.6.23/24  | 192.168.6.1 | SLAAC         | 使用主机设置 | 录像鸡                    |
+| bt      | CT   | `LAN`             | 192.168.6.234/24 | 192.168.6.1 | SLAAC         | 使用主机设置 | 下载鸡 xunlei/bt          |
+| gateway | CT   | `LAN`             | 192.168.6.216/24 | 192.168.6.1 | SLAAC         | 使用主机设置 | 网关鸡                    |
 
 ## 参考文档
 

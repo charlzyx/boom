@@ -7,20 +7,21 @@ lastUpdated: true
 
 clash 旁路由使用了 Debain 12 容器作为基础， 通过 AdGuardHome/mosdns/ShellClash 搭配使用， 改造为一个机智的科学路由
 
-| 服务        | 端口     | 说明                                                                |
-| ----------- | -------- | ------------------------------------------------------------------- |
-| AdGuardHome | :53      | 虽然他时常用来做广告拦截用， 但是作为一个带 GUI 的 DNS 服务器也不错 |
-| mosdns      | :3053    | 丝滑~ 区分域名的归属地， 来智能判断去查询哪个公共服务器             |
-| clash       | :1053    | 科学核心                                                            |
-| yacd        | :9999    | 看板 api                                                            |
-| yacd        | :9999/ui | 看板 UI                                                             |
+| 服务            | 端口     | 说明                                                                |
+| --------------- | -------- | ------------------------------------------------------------------- |
+| AdGuardHome     | :53      | 虽然他时常用来做广告拦截用， 但是作为一个带 GUI 的 DNS 服务器也不错 |
+| AdGuardHome Web | :3000    | UI 管理界面                                                         |
+| mosdns          | :5233    | 丝滑~ 区分域名的归属地， 来智能判断去查询哪个公共服务器             |
+| clash           | :1053    | 科学核心                                                            |
+| yacd            | :9999    | 看板 api                                                            |
+| yacd            | :9999/ui | 看板 UI                                                             |
 
 DNS 查询流程
 
 ```sh
   -> clash(192.168.6.2)
      -> 53: AdGuradHome
-        -> 3053: mosdns
+        -> 5233: mosdns
            -> (if cn) 公共DNS
            -> (not cn) 1053 clash fake-ip dns
 ```
@@ -33,50 +34,30 @@ DNS 查询流程
 arch: amd64
 cmode: shell
 cores: 4
-features: nesting=1
 hostname: clash
 memory: 1024
-nameserver: 223.6.6.6
-net0: name=eth0,bridge=vmbr0,gw=192.168.6.1,hwaddr=82:6B:88:1C:F0:E9,ip=192.168.6.2/24,ip6=auto,type=veth
+net0: name=eth0,bridge=vmbr0,gw=192.168.6.1,hwaddr=DA:2A:33:7B:F0:FC,ip=192.168.6.2/24,ip6=auto,type=veth
 onboot: 1
-ostype: debian
-rootfs: local-lvm:vm-202-disk-0,size=8G
+ostype: alpine
+parent: alpline-stable-v1
+rootfs: local-lvm:vm-102-disk-0,size=4G
 swap: 0
-# 开启特权与 tun 权限，clash tun 模式会需要
-unprivileged: 0
 lxc.cgroup.devices.allow: c 10:200 rwm
 lxc.cgroup2.devices.allow: c 10:200 rwm
 lxc.mount.entry: /dev/net dev/net none bind,create=dir
 ```
 
-## 准备模版
+## 前置依赖
 
-数据中心 - pve -> local - CT 模板 -> 模板 -> Debain 12 -> 下载
+### 安装 nftables
 
-![dltpl](/assets/clash/dltpl.png){data-zoomable}
+ShellClash 的 Nft 混合模式使用, 性能好, 内存占用低
 
-## 创建 CT
+```sh
+apk add nftables
+```
 
-> 记得去掉无特权容器勾选框
-
-模板选择刚才下载的 Debain 12, 推荐配置
-
-- 磁盘 2G
-- CPU 2 CORE
-- 内存 512/0
-
-**重要： 网络按照图示设置 IP: 192.168.6.2/24 网关: 192.168.6.1, 防火墙不要**
-
-![c1](/assets/clash/c1.png){data-zoomable}
-![c2](/assets/clash/c2.png){data-zoomable}
-
-需要注意的点就这些, 安装完成之后启动
-
-### 基础配置
-
-参考 [安装与配置](/install) 中的安装后配置, 完成基础软件安装
-
-## 开启 ipv4/ipv6 流量转发
+### 开启 ipv4/ipv6 流量转发
 
 这是 Debain 系统成为路由器的核心， 还有一些其他调优参数， 后续再讲， 暂时不用关心
 
@@ -89,20 +70,33 @@ sysctl -p
 
 ## 科学核心 ShellClash
 
-一键安装脚本
+因为 alpine 的自带的 shell 被我们从 `ash` 替换为了 `zsh`, 所以 [ShellClash](https://github.com/juewuy/ShellClash/blob/master/README_CN.md) 的一键安装脚本, 并不能直接使用
 
 ```
-export url='https://fastly.jsdelivr.net/gh/juewuy/ShellClash@master' && wget -q --no-check-certificate -O /tmp/install.sh $url/install.sh  && bash /tmp/install.sh && source /etc/profile &> /dev/null
+# 切换到 $HOME
+cd ~
+wget https://ghproxy.com/https://raw.githubusercontent.com/juewuy/ShellClash/master/install.sh
+# 手动将头部的 #!/bin/bash 替换为 #!/bin/zsh
+chmod +x ./install.sh
 ```
+
+同样, 由于 ShellClash 暂时没做 zsh 的适配, 我们需要手动在 `~/.zshrc` 末尾添加两行, 将 `clash` 命令加入终端
+
+```diff
++ alias clash="sh /etc/clash/clash.sh"
++ export clashdir="/etc/clash"
+```
+
+添加完之后 `source ~/.zshrc` 使生效
 
 成功之后输入 `clash` 命令按照菜单指示操作就行, 先设置为本机代理，安装好后面两个软件， 结尾会有一个修正 dns 配置
 
-## 广告拦截 AdGuardHome
+## AdGuardHome
 
 一键安装脚本
 
 ```sh
-curl -s -S -L https://raw.githubusercontent.com/AdguardTeam/AdGuardHome/master/scripts/install.sh | sh -s -- -v
+curl -s -S -L https://ghproxy.com/https://raw.githubusercontent.com/AdguardTeam/AdGuardHome/master/scripts/install.sh | sh -s -- -v
 ```
 
 安装成功后可以通过 `192.168.6.2:3000` （默认） 打开浏览器进行配置， 也可以直接编辑 `/opt/AdGuardHome/AdGuardHome.yaml` 编辑配置
@@ -311,48 +305,16 @@ plugins:
     type: "udp_server"
     args:
       entry: main_sequence
-      listen: 0.0.0.0:3053
+      listen: 0.0.0.0:5233
 
   - tag: "tcp_server"
     type: "tcp_server"
     args:
       entry: main_sequence
-      listen: 0.0.0.0:3053
+      listen: 0.0.0.0:5233
 ```
 
 :::
-
-4. 将 mosdns 设置为系统服务并开机启动
-
-创建文件 `/etc/systemd/system/mosdns.service` 内容如下
-
-```sh
-[Unit]
-Description=A DNS forwarder
-ConditionFileIsExecutable=/etc/mosdns/mosdns
-
-[Service]
-StartLimitInterval=5
-StartLimitBurst=10
-ExecStart=/etc/mosdns/mosdns "start" "--as-service" "-d" "/etc/mosdns"
-Restart=always
-RestartSec=120
-EnvironmentFile=-/etc/sysconfig/mosdns
-
-[Install]
-WantedBy=multi-user.target
-```
-
-之后执行以下命令
-
-```sh
-# 加载新增配置
-systemctl daemon-reload
-# 设置 mosdns 开机启动
-systemctl enable mosdns
-# 启动 mosdns 服务
-systemctl start mosdns
-```
 
 ## 最终配置
 
@@ -397,6 +359,30 @@ DNS运行模式：	fake-ip
 
 其他保持默认即可
 
+## 开机服务
+
+clash 和 AdGuardHome 是安装之后已经处理好了, 只有 mosdns 需要手动处理
+
+添加配置文件 `/etc/init.d/mosdns`
+
+```sh
+#!/sbin/openrc-run
+supervisor=supervise-daemon
+name="mosdns service"
+description="mosnds: DNS Server Run at 5233"
+command=/etc/mosdns/mosdns
+command_args="start --as-service -d /etc/mosdns"
+name=$(basename $(readlink -f $command))
+supervise_daemon_args="--stdout /var/log/${name}.log --stderr /var/log/${name}.err"
+
+
+depend() {
+	After=syslog.target network-online.target
+}
+```
+
+设置开机自启 `rc-update add mosdns` , AdGuardHome 添加开机自启`rc-update add AdGuardHome`
+
 ## 恭喜你 FREEMAN 🎉
 
 这时候可以将我们刚才 iKuai 的 DNS 修改为 `192.168.6.2` 来验证科学是否成功.
@@ -408,6 +394,6 @@ DNS运行模式：	fake-ip
 ![dd](/assets/clash/sbaidu.png){data-zoomable}
 ![dg](/assets/clash/sgoogle.png){data-zoomable}
 
-### 我可不知道什么是机场
+### 我可不知道什么是飞机场
 
 [大米](https://www.bigme.pro/user#/register?code=X8gngfZz)

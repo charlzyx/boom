@@ -74,7 +74,7 @@ tailscale up --accept-dns=false --accept-routes=true  --advertise-routes=192.168
 
 ## AdGuardHome
 
-[安装参考](/0x02clash)
+[安装参考](/0x06clash)
 
 宿主机中的 AdGuardHome 唯一作用就是使用 DNS 劫持 `*.home.com` （也就是在上方 tailscale 劫持的域名）配合 nginx
 将我们的服务映射到域名上， 来方便使用

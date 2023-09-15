@@ -2,4 +2,4 @@
 
 ![home](/assets/nav.png){data-zoomable}
 
-### [charlzyx.github.io/boom](https://charlzyx.github.io/boom) 在线查看
+[charlzyx.github.io/boom](https://charlzyx.github.io/boom) 在线查看

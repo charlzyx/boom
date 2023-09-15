@@ -75,6 +75,7 @@ Linux 发行版（英语：Linux distribution 或 distro，也被叫做 GNU/Linu
 ## PVE 宿主机相关
 
 > 虚拟机 VS CT: 虚拟机是 使用 qemu 运行的虚拟机, CT 是使用 LXC(Linux Container) 技术执行的容器
+
 > CT 模版/CT 容器的 CT 实际就是 LXC (Linux Container), 在本指南中 LXC 等价于 PVE 中的 CT
 
 | 目录                                     | 说明              |

@@ -31,7 +31,7 @@ lastUpdated: true
 2. 手动设置设备 IP `192.168.0.100` 子网掩码 `255.255.255.0` 网关 `192.168.0.1`
 3. 打开浏览器输入网关地址`192.168.0.1`
 
-:::tips 使用场景
+::: tip 使用场景
 经常用来确认 LAN 口: 不确定那个是 LAN 口的时候， 就可以通过手动设置静态地址， 然后插拔到各个网口上测试， 哪个能通那个就是 LAN 口
 :::
 
@@ -95,7 +95,7 @@ sequenceDiagram
   participant D as 机场
   A -->> B: 这个网址的 ip 是什么啊
   B -->> C: 是什么呢
-  Note over C,C: AdGuradHome:53 你帮我看看
+  Note over C,C: AdGuardHome:53 你帮我看看
   alt: 喔是广告啊
     C ->> A: 0.0.0.0 吃屎吧你
   else: 继续昂

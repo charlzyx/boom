@@ -3,7 +3,7 @@ title: .123  RTSP 监控视频流录制
 lastUpdated: true
 ---
 
-# RTSP 监控视频流录制 `192.168.6.33`
+# RTSP 监控视频流录制 `192.168.6.123`
 
 这是使用 corbtab 定时跑的一个脚本, 在脚本中调用了 ffmpeg 录制视频并保存;
 

@@ -34,8 +34,6 @@ sed -i 's|http://download.proxmox.com|https://mirrors.tuna.tsinghua.edu.cn/proxm
 apt update
 ```
 
-:::
-
 ### 2. 开启 ssh
 
 > 非必须， GUI 里面的终端也可以操作

@@ -21,7 +21,7 @@ DNS 查询流程
 
 ```sh
   -> clash(192.168.6.2)
-     -> 53: AdGuradHome
+     -> 53: AdGuardHome
         -> 5233: mosdns
            -> (if cn) 公共DNS
            -> (not cn) 1053 clash fake-ip dns
@@ -100,7 +100,9 @@ chmod +x ./install.sh
 curl -s -S -L https://ghproxy.com/https://raw.githubusercontent.com/AdguardTeam/AdGuardHome/master/scripts/install.sh | sh -s -- -v
 ```
 
-安装成功后可以通过 `192.168.6.2:3000` （默认） 打开浏览器进行配置， 也可以直接编辑 `/opt/AdGuardHome/AdGuardHome.yaml` 编辑配置
+安装成功后可以通过 `192.168.6.2:3000` （默认） 打开浏览器进行配置， 也可以直接编辑 `/opt/AdGuardHome/AdGuardHome.yaml` 编辑配置, 关键 DNS 配置如下
+
+![adgdns](/assets/clash//adgdns.png)
 
 ## mosdns
 
@@ -337,7 +339,8 @@ plugins:
 ### `clash 2` clash 功能设置
 
 ```sh
-DNS运行模式：	fake-ip
+ 1 切换Clash运行模式: 	Nft混合
+ 2 切换DNS运行模式：	fake-ip
  3 跳过本地证书验证：	已开启   ————解决节点证书验证错误
  4 只代理常用端口： 	未开启   ————用于过滤P2P流量
  5 过滤局域网设备：	未开启   ————使用黑/白名单进行过滤
@@ -356,6 +359,26 @@ DNS运行模式：	fake-ip
  4 启用域名嗅探:	已启用	————用于流媒体及防DNS污染
  5 启用节点绕过:	已启用	————用于防止多设备多重流量
  6 配置内置DNS服务	已禁用
+```
+
+### `clash 7 6` 配置内置 DNS 服务
+
+配置当前基础 DNS 为 mosdns
+
+```sh
+当前基础DNS：127.0.0.1:5233
+FallbackDNS：1.0.0.1, 8.8.4.4
+多个DNS地址请用“|”或者“, ”分隔输入
+必须拥有本地根证书文件才能使用dot/doh类型的加密dns
+-----------------------------------------------
+ 1 修改基础DNS
+ 2 修改Fallback_DNS
+ 3 重置DNS配置
+ 4 一键配置加密DNS
+ 5 hosts优化：  	未启用	————调用本机hosts并劫持NTP服务
+ 6 Dnsmasq转发：	未开启	————不推荐使用
+ 7 禁用DNS劫持：	已禁用	————取消劫持局域网53端口
+ 0 返回上级菜单
 ```
 
 其他保持默认即可

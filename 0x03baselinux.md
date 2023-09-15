@@ -7,7 +7,7 @@ lastUpdated: true
 
 ## 发行版
 
-::: detail Linux 发行版 --维基百科
+::: details Linux 发行版 --维基百科
 
 Linux 发行版（英语：Linux distribution 或 distro，也被叫做 GNU/Linux 发行版），为一般用户预先集成好的 Linux 操作系统及各种应用软件。一般用户不需要重新编译，在直接安装之后，只需要小幅度更改设置就可以使用，通常以软件包管理系统来进行应用软件的管理。Linux 发行版通常包含了包括桌面环境、办公包、媒体播放器、数据库等应用软件。这些操作系统通常由 Linux 内核、以及来自 GNU 计划的大量的函式库，和基于 X Window 或者 Wayland 的图形界面。有些发行版考虑到容量大小而没有预装 X Window，而使用更加轻量级的软件，如：BusyBox、musl 或 uClibc-ng。现在有超过 300 个 Linux 发行版（Linux 发行版列表）。大部分都正处于活跃的开发中，不断地改进。
 

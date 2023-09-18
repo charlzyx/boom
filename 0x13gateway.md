@@ -86,7 +86,7 @@ tailscale up --accept-dns=false --accept-routes=true  --advertise-routes=192.168
 安装
 
 ```sh
-apk add nginx
+apk add nginx openssl
 # 设置开机自启
 rc-update add nginx
 ```
@@ -154,16 +154,18 @@ server {
 
 :::
 
-:::details /etc/nginx/http.d/host.conf
+:::details /etc/nginx/http.d/pve.conf
 
 ```nginx
 # PVE 管理后台 GUI
 server {
   # https://bbs.xmbillion.com/thread-47.htm
-  listen 80;
+  listen 443 ssl;
 
   server_name pve.home.com;
-  # ssl证书地址
+  # ssl证书地址, 生成见下方
+  ssl_certificate /etc/nginx/ssl/srv.crt;
+  ssl_certificate_key /etc/nginx/ssl/srv.key;
   location / {
     proxy_pass https://192.168.6.6:8006;
     proxy_redirect off;
@@ -195,7 +197,7 @@ server {
 
 :::
 
-:::details /etc/nginx/http.d/bt.conf
+:::details /etc/nginx/http.d/host.conf
 
 ```nginx
 # bt at 192.168.6.208
@@ -338,6 +340,8 @@ cd /etc/nginx/ssl
 openssl genrsa -out srv.key 2048
 # 指定私钥 srv.key 生成新的 srv.csr 文件, 随便填写就行
 openssl req -new -key srv.key -out srv.csr
+# 生成 crt 文件
+openssl x509 -req -in srv.csr -out srv.crt -signkey srv.key -days 3650
 ```
 
 ### 重启 nginx

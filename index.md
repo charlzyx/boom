@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "Chao's BoomLab"
   text: "家庭路由器/网络的折腾笔记."
-  tagline: 毕竟, 哪个 boy 不梦想拥有用一台自己的服务器呢? 哪怕只是在家里
+  tagline: 毕竟, 哪个 boy 不梦想拥有一台自己的服务器呢? 哪怕只是在家里
   actions:
     - theme: brand
       text: 让我看看

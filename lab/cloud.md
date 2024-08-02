@@ -213,6 +213,7 @@ smbpasswd -a tv
   directory mask = 0777
   fource user = tv
 ```
+:::
 
 ## 迅雷下载
 

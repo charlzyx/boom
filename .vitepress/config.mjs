@@ -20,6 +20,7 @@ export default withMermaid({
       { text: "0x01.小米路由器", link: "/lab/router" },
       { text: "0x02.MiniPC", link: "/lab/minipc" },
       { text: "0x03.tailscale", link: "/lab/tailscale" },
+      { text: "0x04.云盘", link: "/lab/cloud" },
     ],
     footer: {
       message: "Powered by VitePress",

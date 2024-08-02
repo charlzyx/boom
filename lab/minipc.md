@@ -2,29 +2,7 @@
 
 > 大唐 MaxTang NX-N100
 
-```bash
-         .://:`              `://:.            root@chao
-       `hMMMMMMd/          /dMMMMMMh`          ---------
-        `sMMMMMMMd:      :mMMMMMMMs`           OS: Proxmox VE 8.2.2 x86_64
-`-/+oo+/:`.yMMMMMMMh-  -hMMMMMMMy.`:/+oo+/-`   Host: EHL30 V1.0
-`:oooooooo/`-hMMMMMMMyyMMMMMMMh-`/oooooooo:`   Kernel: 6.8.4-2-pve
-  `/oooooooo:`:mMMMMMMMMMMMMm:`:oooooooo/`     Uptime: 21 hours, 24 mins
-    ./ooooooo+- +NMMMMMMMMN+ -+ooooooo/.       Packages: 805 (dpkg)
-      .+ooooooo+-`oNMMMMNo`-+ooooooo+.         Shell: zsh 5.9
-        -+ooooooo/.`sMMs`./ooooooo+-           Terminal: /dev/pts/0
-          :oooooooo/`..`/oooooooo:             CPU: Intel Celeron J6412 (4) @ 2.600GHz
-          :oooooooo/`..`/oooooooo:             GPU: Intel Elkhart Lake [UHD Graphics Gen11 16EU]
-        -+ooooooo/.`sMMs`./ooooooo+-           Memory: 1350MiB / 7788MiB
-      .+ooooooo+-`oNMMMMNo`-+ooooooo+.
-    ./ooooooo+- +NMMMMMMMMN+ -+ooooooo/.
-  `/oooooooo:`:mMMMMMMMMMMMMm:`:oooooooo/`
-`:oooooooo/`-hMMMMMMMyyMMMMMMMh-`/oooooooo:`
-`-/+oo+/:`.yMMMMMMMh-  -hMMMMMMMy.`:/+oo+/-`
-        `sMMMMMMMm:      :dMMMMMMMs`
-       `hMMMMMMd/          /dMMMMMMh`
-         `://:`              `://:`
-```
-
+![neofetch](/lab/neofetch.png)
 
 ## 安装 PVE
 
@@ -36,12 +14,12 @@
 老版本里面有比较啰嗦的 [更详细的指南](/archived/0x04install.md) 与 [linux 基本命令解释](/archived/0x03baselinux.md)
 
 1. 下载 ISO 镜像文件
-   > 官方: https://www.proxmox.com/en/downloads
-   > 清华源: https://mirrors.tuna.tsinghua.edu.cn/proxmox/iso/
+   - 官方: https://www.proxmox.com/en/downloads
+   - 清华源: https://mirrors.tuna.tsinghua.edu.cn/proxmox/iso/
 2. 制作启动盘 Ventoy
-   > https://ventoy.net/cn/download.html
+   - https://ventoy.net/cn/download.html
 3. 有线安装
-   > BIOS 修改 U 盘启动
+   - BIOS 修改 U 盘启动
 
 手动网络配置参考 /etc/network/interface
 
@@ -112,7 +90,6 @@ mkdir /home/cloud && chmod -R 755 /home/cloud
 
 ## LXC OpenWRT 安装
 
-> [!TIP]
 > 为什么不用虚拟机?
 > 运行在PVE LXC CT容器中的OpenWRT优点：
 > 1、资源利用率高。（老高自用的1核+512M内存足矣，具体配置自己按需设置）
@@ -221,6 +198,8 @@ config device
 
 ## 小结
 
-受益于 PVE 虚拟机的能力, 其实还可以拓展很多应用出来, 包括虚拟机里的黑群晖之类, 但我这个机器比较孱弱 J6412/8Gb/256Gb; 搞点小应用还是可以的. 后续在这方便回拓展一下
+受益于 PVE 虚拟机的能力, 其实还可以拓展很多应用出来, 包括虚拟机里的黑群晖之类, 但我这个机器比较孱弱 J6412/8Gb/256Gb; 
+
+搞点小应用还是可以的. 后续在这方便回拓展一下
 
 接下来问题就是, 我们该如何在公网环境中访问家里的内网呢? 这就的感谢赛博菩萨 [tailscale](/lab/tailscale)

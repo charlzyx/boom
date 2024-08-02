@@ -2,7 +2,7 @@
 
 > 大唐 MaxTang NX-N100
 
-![neofetch](/lab/neofetch.png)
+![neofetch](/lab/assets/neofetch.png)
 
 ## 安装 PVE
 

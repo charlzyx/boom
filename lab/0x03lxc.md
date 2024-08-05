@@ -33,13 +33,15 @@ sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/ins
 reboot
 ```
 
-之后关闭容器, 在宿主机里面继续操作
+之后关闭容器, 就可以把119转换 CT 模板了， 下次就可以直接从这个模版克隆出来
 
-/etc/pve/lxc/119.conf 
+
+## 提权配置, 需要哪个配哪个
+
+> 不要配置到模版中去，先克隆，再进行配置
 
 ```bash
-+ features: fuse=1,mknod=1,mount=nfs;cifs,nesting=1
-# 移除容器安全配置
+# 移除容器安全配置 docker 需要
 +lxc.apparmor.profile: unconfined
 +lxc.cap.drop:
 +lxc.cgroup.devices.allow: a
@@ -50,8 +52,6 @@ reboot
 +lxc.cgroup2.devices.allow: c 226:0 rwm
 +lxc.cgroup2.devices.allow: c 226:128 rwm
 ```
-
-然后就可以把119转换为模版了
 
 
 ## 小结

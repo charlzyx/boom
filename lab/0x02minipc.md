@@ -248,4 +248,4 @@ tailscale up --advertise-exit-node  --advertise-routes=10.5.6.0/24 --reset
 
 ## 小结
 
-这样一个连接万物的 Air 服务器就配置好了
+这样一个连接万物的 Air LAN 就配置好了

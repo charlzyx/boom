@@ -1,9 +1,40 @@
-# 0x04 下载机
+# 0x03 LXC 容器应用
 
+
+## 准备 CT 通用模版 
+
+先准备一个比较全能的模版, 基础镜像使用 alpine-4.19 在 CT模版 -> 模版 菜单中可以找到
+
+::: danger  注意事项
+- 去掉非特权容器勾选框 
+- 硬盘小一点
+:::
+
+其他后面都可以调整, 随便填
+
+```bash
+# 更新国内源加速
+sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+apk update
+# 安装常用软件
+apk add neovim zsh util-linux shadow git curl
+# 使用 neovim 替换 vi/vim/nvim 命令
+cd /usr/bin
+rm vi && ln -s nvim vim && ln -s nvim vi
+# 安装 oh-my-zsh
+sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
+
+# 安装之后会有提示 zsh 作为默认 shell, 不小心错过了可以手动执行
+# chsh -s /bin/zsh
+# 重启生效
+reboot
+```
+
+之后关闭容器, 就可以把118转换 CT 模板了， 下次就可以直接从这个模版克隆出来
 
 ## 从模版克隆创建
 
-WEB 管理界面操作就可以啦, 添加挂载硬盘配置需要添加一行
+WEB 管理界面操作就可以啦, 这里添加一行硬盘挂载
 
 ```diff
 arch: amd64
@@ -27,7 +58,6 @@ lxc.cgroup2.devices.allow: c 226:0 rwm
 lxc.cgroup2.devices.allow: c 226:128 rwm
 ```
 
-后续命令都是在容器中执行的命令
 
 ## 迅雷下载
 
@@ -40,14 +70,12 @@ alpine 运行这个有 glibc 的问题, 下面是修复脚本
 # https://github.com/sgerrand/alpine-pkg-glibc/issues/210#issuecomment-1841801227
 echo 'https://storage.sev.monster/alpine/edge/testing' | tee -a /etc/apk/repositories
 wget https://storage.sev.monster/alpine/edge/testing/x86_64/sevmonster-keys-1-r0.apk
-sh -c '
-  apk add --allow-untrusted ./sevmonster-keys-1-r0.apk
-  apk update \
-    && apk add gcompat \
-    && rm -rf /lib/ld-linux-x86-64.so.2 \
-    && apk add --force-overwrite glibc \
-    && apk add glibc-bin'
-
+apk add --allow-untrusted ./sevmonster-keys-1-r0.apk
+apk update
+apk add gcompat 
+rm -rf /lib/ld-linux-x86-64.so.2 
+apk add --force-overwrite glibc 
+apk add glibc-bin
 rm -rf ./sevmonster-keys-1-r0.apk
 
 # 第二步: fix libstdc++ (迅雷需要)
@@ -146,3 +174,7 @@ rc-update add alist
 # 立即启动
 rc-service alist start
 ```
+
+## 结语（暂时
+
+其他应用都是类似的方式添加， 举一反三

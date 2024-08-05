@@ -1,4 +1,6 @@
-# 0x02 MiniPC.Air
+# 0x02 MiniPC.AirLAN
+
+Air LAN 万物互联~~不是~~
 
 > 大唐 MaxTang NX-N100
 
@@ -11,6 +13,9 @@
 
 ![pveiface](/lab/assets/pveiface.png)
 
+::: details 更详细的指南 & linux 基本命令解释
+
+
 老版本里面有比较啰嗦的 [更详细的指南](/archived/0x04install.md) 与 [linux 基本命令解释](/archived/0x03baselinux.md)
 
 1. 下载 ISO 镜像文件
@@ -21,7 +26,8 @@
 3. 有线安装
    - BIOS 修改 U 盘启动
 
-手动网络配置参考 /etc/network/interface
+
+有线网络配置参考 /etc/network/interface
 
 ```bash
 auto vmbr0
@@ -33,7 +39,8 @@ iface vmbr0 inet static
       bridge-fd 0
 ```
 
-::: details WiFi 连接 (无法桥接, 非常不推荐) 
+
+WiFi 连接 (无法桥接, 非常不推荐) 
 
 ```bash
 apt install wpasupplicant -y
@@ -65,7 +72,8 @@ network={
 
 :::
 
-## 硬盘分区 (不需要可跳过)
+## 硬盘分区
+
 
 
 ```bash
@@ -81,32 +89,64 @@ mkdir /home/cloud && chmod -R 755 /home/cloud
 
 ```
 
+
 /etc/fstab
 
-```bash
+
+```sh
 /dev/sda4 /home/cloud ext4 defaults 0 0
 # mount -a && systemctl daemon-reload
 ```
 
-## LXC OpenWRT  安装
 
-> 使用官方 OpenWRT 镜像, 承担了三个重要的功能
 
-- 路由器中继
-- SMB 服务器
-- tailscale 中心客户端
+## 提权配置, 需要哪个配哪个
 
-::: info LXC CT容器的优点：
+> 不要配置到模版中去，先克隆，再进行配置
+
+```bash
+# 移除容器安全配置 docker 需要
++lxc.apparmor.profile: unconfined
++lxc.cap.drop:
++lxc.cgroup.devices.allow: a
+# 开放 tun 给容器 9:200 来自 ls -l /dev/net
++lxc.cgroup1.devices.allow: c 10:200 rwm
++lxc.mount.entry: /dev/net dev/net none bind,create=dir
+# 开放显卡给容器 225:0 和 226:128 来自 ls -l /dev/dri
++lxc.cgroup1.devices.allow: c 226:0 rwm
++lxc.cgroup1.devices.allow: c 226:128 rwm
+```
+
+
+## Air LAN &lt;LXC OpenWRT&gt; 的安装
+
+使用官方 OpenWRT 镜像, 承担了三个重要的功能
+- 1. 透明路由中继 
+- 2. SMB 服务器 
+- 3. 外网访问 tailscale
+
+::: tip 为什么不用虚拟机以及为什么不用 alpine
+LXC CT容器的优点：
+
 - 资源利用率高
 - 直接使用宿主内核及硬件，效率高
 - 温度，机型等硬件等系统信息直接显示
+
+<hr />
+
+1. 很多都是路由而非应用， 直接op 可以减少很多配置
+
+2. alpine 的 smb 配置有奇怪的问题 （windows 可以发现， 但无法连接）， 不如 op 直接 LuCI 方便
 :::
 
-其中 rootfs.tar.gz 可以直接下载打包好的,也可以参考油管视频 [OpenWRT常规img.gz转化为PVE LXC CT模版rootfs.tar.gz及简单LXC OP的安装与基本设置以旁路由模式为例](https://www.youtube.com/watch?v=w7_uTejLHeA)
+
 
 - [openwrt 官方](https://archive.openwrt.org/releases/23.05.3/targets/x86/64/)
 - [清华镜像站](https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/23.05.4/targets/x86/64/)
 - [带佬的可定制](https://openwrt.ai/?target=x86%2F64&id=generic)
+
+下载 rootfs.tar.gz 镜像或者 [OpenWRT常规img.gz转化为PVE LXC CT模版rootfs.tar.gz及简单LXC OP的安装与基本设置以旁路由模式为例](https://www.youtube.com/watch?v=w7_uTejLHeA)
+
 
 以清华镜像站的为例, 以下命令在宿主机的 shell 中执行
 
@@ -119,7 +159,7 @@ pct create 110 ./openwrt-23.05.4-x86-64-rootfs.tar.gz --rootfs \
    -net1 bridge=vmbr1,name=eth1
 ```
 
-完整配置如下, 先不用管太多细节, 下一章节有一点点解释
+完整配置如下
 
 ::: details /etc/pve/lxc/110.conf
 
@@ -128,7 +168,7 @@ arch: amd64
 cmode: shell
 cores: 1
 features: fuse=1,mknod=1,mount=nfs;cifs,nesting=1
-hostname: Air
+hostname: AirLAN
 memory: 512
 mp0: /home/cloud,mp=/cloud
 net0: name=eth0,bridge=vmbr0,gw=10.5.6.1,hwaddr=BC:24:11:E7:9B:81,ip=10.5.6.10/24,type=veth
@@ -141,8 +181,6 @@ lxc.cap.drop:
 lxc.cgroup.devices.allow: a
 lxc.cgroup2.devices.allow: c 10:200 rwm
 lxc.mount.entry: /dev/net dev/net none bind,create=dir
-lxc.cgroup2.devices.allow: c 226:0 rwm
-lxc.cgroup2.devices.allow: c 226:128 rwm
 
 ```
 
@@ -150,7 +188,7 @@ lxc.cgroup2.devices.allow: c 226:128 rwm
 
 `pct start 110` 启动!
 
-### LXC OpenWRT 中继模式配置
+### OpenWRT 透明路由/中继模式配置
 
 在 PVE 管理后台中进入 OpenWRT 命令行, 用户名 root, 密码看各自文档, 官方版没有密码, 直接回车
 
@@ -183,6 +221,9 @@ config device
 ![route-check](/lab/assets/router-check.png)
 
 重启之后， `ip addr` 查看下ip信息， 之后就可以通过浏览器来访问 OpenWRT LuCI 界面了.
+
+
+## opkg repo 更新
 
 ```bash
 # 更新软件源
@@ -248,4 +289,5 @@ tailscale up --advertise-exit-node  --advertise-routes=10.5.6.0/24 --reset
 
 ## 小结
 
-这样一个连接万物的 Air LAN 就配置好了
+这样一个连接万物的 Air LAN 就配置好了， 下面我们看一下如何搭建一些常见的应用
+

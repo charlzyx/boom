@@ -1,11 +1,4 @@
-# 0x04 cloud 云盘
-
-## 硬盘分配
-
-之前有提到我单独留了一块硬盘分区 挂在到了 `/home/cloud` , 可以回去 [MiniPC](/lab/0x02minipc.md) 部分查看
-需要修改对应的配置文件挂载到 lxc 中
-
-并且, 宿主机中, 记得 `chmod -R 777 /home/cloud` 给够权限
+# 0x04 下载机
 
 
 ## 从模版克隆创建
@@ -20,7 +13,7 @@ features: fuse=1,mknod=1,mount=nfs;cifs,nesting=1
 hostname: cloud
 memory: 512
 +mp0: /home/cloud,mp=/cloud
-net0: name=eth0,bridge=vmbr0,gw=10.5.6.1,hwaddr=BC:24:11:23:DB:42,ip=10.5.6.12/24,type=veth
+net0: name=eth0,bridge=vmbr0,gw=10.5.6.1,hwaddr=BC:24:11:23:DB:42,ip=10.5.6.11/24,type=veth
 onboot: 1
 ostype: alpine
 rootfs: local-lvm:vm-112-disk-0,size=2G
@@ -35,58 +28,6 @@ lxc.cgroup2.devices.allow: c 226:128 rwm
 ```
 
 后续命令都是在容器中执行的命令
-
-## smb 共享
-
-添加用户, 根据提示设置用户名密码
-
-```sh
-# 添加系统用户
-useradd -u 1001 -s /usr/sbin/nologin -M cloud
-useradd -u 1002 -s /usr/sbin/nologin -M tv
-# 添加smb用户
-smbpasswd -a cloud
-smbpasswd -a tv
-```
-
-配置文件
-
-/etc/samba/smb.conf
-```sh
-[global]
-   workgroup = WORKGROUP
-   server string = cloud
-
-[tv]
-   path = /cloud/tv
-   public = yes
-   writable = yes
-   printable = no
-
-[cloud]
-   path = /cloud
-   public = no
-   writable = yes
-   valid users = cloud
-   force user = cloud
-   create mask = 0777
-
-```
-
-在 Windows 中网络面板没有发现?
-
-> 这个我目前也没有解决, wsdd 和 wsdd2 我都试了, 都止步于 windows 可以出现设备, 但无法连接
-
-我目前是通过在资源管理器中, 添加网络位置 `\\10.5.6.12\cloud` 然后登录用户添加的
-
-添加一下开机自启
-
-```bash
-# 添加开机自启
-rc-update add samba
-# 立即启动
-rc-service samba start
-```
 
 ## 迅雷下载
 
@@ -120,7 +61,7 @@ apk add libstdc++
 
 ```bash
 
-mkdir /etc/xunlei && cd /etc/xunlei
+mkdir /opt/xunlei && cd /opt/xunlei
 
 wget https://github.com/cnk3x/xunlei/releases/download/v3.20.1/xlp-amd64.tar.gz
 tar -zxvf xlp-amd64.tar.gz && rm -rf ./xlp-amd64.tar.gz
@@ -131,10 +72,6 @@ chmod +x ./xlp
 
 /etc/init.d/xunlei
 
-```bash
-
-#!/sbin/openrc-run
-
 ```sh
 #!/sbin/openrc-run
 supervisor=supervise-daemon
@@ -142,17 +79,16 @@ USER=root
 GROUP=root
 name="xunlei"
 description="Xunlei Downlaod Server"
-command=/etc/xunlei/xlp
+command=/opt/xunlei/xlp
 command_args="--dir_download=/cloud/xunlei/download --dir_data=/cloud/xunlei/data"
 name=$(basename $(readlink -f $command))
 supervise_daemon_args="--stdout /var/log/${name}.log --stderr /var/log/${name}.err"
 
 depend() {
-	After=syslog.target network-online
+	After=syslog.target
 }
 ```
 
-```
 添加完文件之后
 
 ```bash
@@ -170,7 +106,7 @@ rc-service xunlei start
 
 
 ```sh
-mkdir -p /etc/alist && cd /etc/alist
+mkdir -p /opt/alist && cd /opt/alist
 wget https://github.com/alist-org/alist/releases/download/v3.36.0/alist-linux-amd64.tar.gz
 tar -zxvf ./alist-linux-amd64.tar.gz && rm -rf  ./alist-linux-amd64.tar.gz
 chmod +x ./alist
@@ -189,18 +125,17 @@ USER=root
 GROUP=root
 name="Alist service"
 description="Alist: Pan Server"
-command=/etc/alist/alist
-command_args="--data /etc/alist/data server"
+command=/opt/alist/alist
+command_args="--data /opt/alist/data server"
 name=$(basename $(readlink -f $command))
 supervise_daemon_args="--stdout /var/log/${name}.log --stderr /var/log/${name}.err"
 
 
 depend() {
-	After=syslog.target network-online
+	After=syslog.target 
 }
 ```
 
-```
 添加完文件之后
 
 ```bash

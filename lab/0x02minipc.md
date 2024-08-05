@@ -1,4 +1,4 @@
-# 0x02 MiniPC 
+# 0x02 MiniPC.Air
 
 > 大唐 MaxTang NX-N100
 
@@ -26,7 +26,7 @@
 ```bash
 auto vmbr0
 iface vmbr0 inet static
-      address 10.5.6.6/24
+      address 10.5.6.8/24
       gateway 10.5.6.1
       bridge-ports en0sp1
       bridge-stp off
@@ -44,7 +44,7 @@ apt install wpasupplicant -y
 ```bash
 auto wlp3s0
 iface wlp3s0 inet dhcp
-      # address 10.5.6.6/24
+      # address 10.5.6.8/24
       gateway 10.5.6.1
       wpa_conf /etc/network/wifi.conf
 ```
@@ -62,7 +62,7 @@ network={
 }
 ```
 
-```
+
 :::
 
 ## 硬盘分区 (不需要可跳过)
@@ -88,18 +88,21 @@ mkdir /home/cloud && chmod -R 755 /home/cloud
 # mount -a && systemctl daemon-reload
 ```
 
-## LXC OpenWRT 安装
+## LXC OpenWRT  安装
 
-::: info 为什么不用虚拟机?
-运行在PVE LXC CT容器中的OpenWRT优点：
+> 使用官方 OpenWRT 镜像, 承担了三个重要的功能
+
+- 路由器中继
+- SMB 服务器
+- tailscale 中心客户端
+
+::: info LXC CT容器的优点：
 - 资源利用率高
 - 直接使用宿主内核及硬件，效率高
 - 温度，机型等硬件等系统信息直接显示
 :::
 
-其中 rootfs.tar.gz 可以直接下载打包好的
-
-也可以参考油管视频 [OpenWRT常规img.gz转化为PVE LXC CT模版rootfs.tar.gz及简单LXC OP的安装与基本设置以旁路由模式为例](https://www.youtube.com/watch?v=w7_uTejLHeA)
+其中 rootfs.tar.gz 可以直接下载打包好的,也可以参考油管视频 [OpenWRT常规img.gz转化为PVE LXC CT模版rootfs.tar.gz及简单LXC OP的安装与基本设置以旁路由模式为例](https://www.youtube.com/watch?v=w7_uTejLHeA)
 
 - [openwrt 官方](https://archive.openwrt.org/releases/23.05.3/targets/x86/64/)
 - [清华镜像站](https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/23.05.4/targets/x86/64/)
@@ -116,23 +119,9 @@ pct create 110 ./openwrt-23.05.4-x86-64-rootfs.tar.gz --rootfs \
    -net1 bridge=vmbr1,name=eth1
 ```
 
-大概意思是:
+完整配置如下, 先不用管太多细节, 下一章节有一点点解释
 
-- 创建 ID 为 `100` 的CT , 使用刚才下载的 `openwrt...rootfs.tar.gz` 文件作为模版
-
-- 指定虚拟磁盘为 `2`Gb(后续可以扩容不能减少), 系统类型 `unmanaged` (UI创建会因为无法推断系统类型而失败) 主机名称 `OpenWRT`
-
-- 架构 `amd64` CPU 核心数 `1`, 内存 `512`Mb Swap `0` , 添加网口绑定 `eth0:vmbr0`, `eth1``vmbr1` (需要先管理界面添加对网口的绑定)
-
-完成之后, 需要再次在配置文件中添加一些配置, 参考下方
-
-::: danger 开启特性功能-嵌套
-不然会因为 DNS 问题连不了网
-
-features: nesting=1
-:::
-
-/etc/pve/lxc/110.conf
+::: details /etc/pve/lxc/110.conf
 
 ```bash
 arch: amd64
@@ -157,9 +146,11 @@ lxc.cgroup2.devices.allow: c 226:128 rwm
 
 ```
 
+:::
+
 `pct start 110` 启动!
 
-## OpenWRT 中继模式配置
+### LXC OpenWRT 中继模式配置
 
 在 PVE 管理后台中进入 OpenWRT 命令行, 用户名 root, 密码看各自文档, 官方版没有密码, 直接回车
 
@@ -169,17 +160,6 @@ lxc.cgroup2.devices.allow: c 226:128 rwm
 修改 /etc/config/network 文件配置
 
 ```bash
-config interface 'loopback'
-        option device 'lo'
-        option proto 'static'
-        option ipaddr '127.0.0.1'
-        option netmask '255.0.0.0'
-
-config globals 'globals'
-        # 这里默认多少就是多少, 因为我没有用 ipv6 所以没所谓
-        option ula_prefix 'fd07:40c6:20ae::/48' 
-        option packet_steering '1'
-
 config interface 'lan'
         option proto 'static'
         option ipaddr '10.5.6.10'
@@ -198,21 +178,74 @@ config device
 
 修改保存之后, `service network restart` 或者 直接 `reboot` 重启就好了
 
-```bash
-
-sed -i 's_downloads.openwrt.org_mirrors.tuna.tsinghua.edu.cn/openwrt_' /etc/opkg/distfeeds.conf
-opkg install samba4-server luci-app-samba4 tailscale shadow
-
-```
-
-## 验证
-
 如果配置成功的话, 这时候就能够在小米路由器的管理后台看到 网线联网设备新增了三个
 
 ![route-check](/lab/assets/router-check.png)
 
-以及, 我们可以使用 ip 来访问对应的 pve/openwrt/群晖 管理后台
+重启之后， `ip addr` 查看下ip信息， 之后就可以通过浏览器来访问 OpenWRT LuCI 界面了.
+
+```bash
+# 更新软件源
+sed -i 's_downloads.openwrt.org_mirrors.tuna.tsinghua.edu.cn/openwrt_' /etc/opkg/distfeeds.conf
+
+```
+
+## SMB 服务器 
+
+可以方便的在局域网共享文件
+
+```bash
+# 安装工具包
+opkg install samba4-server luci-app-samba4 wsdd2 shadow
+
+# 需要先添加系统用户， 才能加入到 smb 用户
+useradd -u 1001 -s /usr/sbin/nologin -M cloud
+useradd -u 1002 -s /usr/sbin/nologin -M tv
+smbapasswd -a cloud # 根据提示输入用户名密码
+smbapasswd -a tv # 根据提示输入用户名密码
+#  smb 服务设置为开机自启
+service samba4 enable
+#  smb 服务 立即启动 
+service samba4 start
+#  windows 网络服务发现服务设置为开机自启
+service wsdd2 enable
+#  smb 服务 立即启动 
+service wsdd2 start
+```
+
+可视化的 smb 配置要友好的多了
+![smb](/lab/assets/lucismb.png)
+
+
+
+## tailscale
+
+简单来说, tailscale 是一个基于 WireGuard® 的 VPN 服务, 可以在公网设备和家里局域网之间打洞.
+了解更多可以查看官网 [https://tailscale.com](https://tailscale.com)
+
+```bash
+opkg install tailscale
+tailscale update
+service tailscale enable
+service tailscale start
+
+# 首次需要打开链接登录， 后续就不用了
+tailscale up --advertise-exit-node  --advertise-routes=10.5.6.0/24 --reset
+
+```
+有问题的话, 可以通过手动运行 tailscaled 命令查看 log 来排查
+
+之后再 tailscale 的 Admin console WEB 页面开启 子路由和退出节点
+![tailconsole](/lab/assets/tailconsole.png)
+
+成功的话, 就可以在安装 tailscale 客户端, 并开启 VPN 链接的情况下, 在公网使用局域网ip网段 `10.5.6.0/24` 进行访问了, 就像这样
+
+![showtime](/lab/assets/showtime.png)
+
+当然 tailscale 其实提供了多种访问方式, 另外还有 tailscale serve / tailscale funnel 将本地映射到公网之类的高级功能, 可以自由探索一番
+
+<!--@include: ./parts/tailroute.md-->
 
 ## 小结
 
-基本需求这样就可以了, 后面分单元讲解一下 LXC 的应用搭建
+这样一个连接万物的 Air 服务器就配置好了

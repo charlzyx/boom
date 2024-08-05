@@ -1,4 +1,4 @@
-# 0x03 LXC 容器
+# 0x03 Alpine in LXC 容器
 
 
 ## 模版准备
@@ -6,9 +6,9 @@
 先准备一个比较全能的模版, 基础镜像使用 alpine-3.19 在 CT模版 -> 模版 菜单中可以找到
 
 
-## 安装基础依赖
+## 创建容器
 
-::: danger 创建CT: 119
+::: danger  注意事项
 - 去掉非特权容器勾选框 
 - 硬盘小一点
 :::
@@ -25,7 +25,7 @@ apk add neovim zsh util-linux shadow git curl
 cd /usr/bin
 rm vi && ln -s nvim vim && ln -s nvim vi
 # 安装 oh-my-zsh
-sh -c "$(wget https://ghproxy.com/https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
+sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 
 # 安装之后会有提示 zsh 作为默认 shell, 不小心错过了可以手动执行
 # chsh -s /bin/zsh
@@ -33,9 +33,9 @@ sh -c "$(wget https://ghproxy.com/https://raw.githubusercontent.com/ohmyzsh/ohmy
 reboot
 ```
 
-之后关闭虚拟机, 在宿主机里面继续操作
+之后关闭容器, 在宿主机里面继续操作
 
-`cd /etc/pve/lxc` 编辑 119.conf, 添加这些内容
+/etc/pve/lxc/119.conf 
 
 ```bash
 + features: fuse=1,mknod=1,mount=nfs;cifs,nesting=1
@@ -51,7 +51,7 @@ reboot
 +lxc.cgroup2.devices.allow: c 226:128 rwm
 ```
 
-之后就可以把119转换为模版了
+然后就可以把119转换为模版了
 
 
 ## 小结

@@ -109,7 +109,7 @@ mkdir /home/cloud && chmod -R 755 /home/cloud
 
 ```bash
 wget https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/23.05.4/targets/x86/64/openwrt-23.05.4-x86-64-rootfs.tar.gz
-qm create 110 ./openwrt-23.05.4-x86-64-rootfs.tar.gz --rootfs \
+pct create 110 ./openwrt-23.05.4-x86-64-rootfs.tar.gz --rootfs \
    local-lvm:2 --ostype unmanaged --hostname OpenWRT \
    --arch amd64 --cores 1 --memory 512 --swap 0 \
    -net0 bridge=vmbr0,name=eth0 \
@@ -136,21 +136,24 @@ features: nesting=1
 
 ```bash
 arch: amd64
+cmode: shell
 cores: 1
-# 开启特性功能-嵌套, 不然可能因为 DNS 问题连不了网
-features: nesting=1
-hostname: OpenWRT
+features: fuse=1,mknod=1,mount=nfs;cifs,nesting=1
+hostname: Air
 memory: 512
-net0: name=eth0,bridge=vmbr0,hwaddr=BC:24:11:DF:3F:83,type=veth
-net1: name=eth1,bridge=vmbr1,hwaddr=BC:24:11:67:0A:8A,type=veth
-onboot: 1
+mp0: /home/cloud,mp=/cloud
+net0: name=eth0,bridge=vmbr0,gw=10.5.6.1,hwaddr=BC:24:11:E7:9B:81,ip=10.5.6.10/24,type=veth
+net1: name=eth1,bridge=vmbr1,hwaddr=BC:24:11:8E:6F:7E,type=veth
 ostype: unmanaged
 rootfs: local-lvm:vm-110-disk-0,size=2G
 swap: 0
-# 如果 需要 开启 tun 模块的话, 就使用下面三行, 不然就不需要
-lxc.cgroup.devices.allow: c 10:200 rwm
+lxc.apparmor.profile: unconfined
+lxc.cap.drop:
+lxc.cgroup.devices.allow: a
 lxc.cgroup2.devices.allow: c 10:200 rwm
 lxc.mount.entry: /dev/net dev/net none bind,create=dir
+lxc.cgroup2.devices.allow: c 226:0 rwm
+lxc.cgroup2.devices.allow: c 226:128 rwm
 
 ```
 
@@ -194,6 +197,13 @@ config device
 ```
 
 修改保存之后, `service network restart` 或者 直接 `reboot` 重启就好了
+
+```bash
+
+sed -i 's_downloads.openwrt.org_mirrors.tuna.tsinghua.edu.cn/openwrt_' /etc/opkg/distfeeds.conf
+opkg install samba4-server luci-app-samba4 tailscale shadow
+
+```
 
 ## 验证
 

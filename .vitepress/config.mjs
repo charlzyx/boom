@@ -17,10 +17,11 @@ export default withMermaid({
     ],
     sidebar: [
       { text: "0x00.写在前面", link: "/lab/index" },
-      { text: "0x01.小米路由器", link: "/lab/router" },
-      { text: "0x02.MiniPC", link: "/lab/minipc" },
-      { text: "0x03.tailscale", link: "/lab/tailscale" },
-      { text: "0x04.云盘", link: "/lab/cloud" },
+      { text: "0x01.小米路由器", link: "/lab/0x01router" },
+      { text: "0x02.MiniPC", link: "/lab/0x02minipc" },
+      { text: "0x03.LXC 容器", link: "/lab/0x03lxc" },
+      { text: "0x04.下载机", link: "/lab/0x04cloud" },
+      { text: "0x05.tailscale", link: "/lab/0x05tailscale" },
     ],
     footer: {
       message: "Powered by VitePress",

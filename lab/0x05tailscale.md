@@ -1,21 +1,15 @@
-# 0x03 tailscale
+# 0x05 tailscale
 
-简单来说, tailscale 是一个基于 WireGuard® 的 VPN 服务, 可以在公网设备和家里局域网打洞连通.
-了解更多可以查看官网 [https://tailscale.com](https://tailscale.com), 对我们来讲, 最大的困难在于如何在路由器上安装
+简单来说, tailscale 是一个基于 WireGuard® 的 VPN 服务, 可以在公网设备和家里局域网之间打洞.
+了解更多可以查看官网 [https://tailscale.com](https://tailscale.com)
 
-::: tip 安装在路由器上的优势
-在开启 tailscale 客户端 VPN 的情况下, 使用内网 ip 访问内网服务, 没有这种偏好的话
-其实装在 PVE 里面的虚拟机里也是可以的
-:::
+::: details 如果要安装在路由器上的话, 略微有亿点点困难
 
 ## 如何安装
 
-::: danger 官方给的安装脚本并不能直接运行
-
-因为小米路由器就算破解了 ssh, 但不能像常规的 openwrt 一样自由的安装软件与配置;
+官方给的安装脚本并不能直接运行, 因为小米路由器就算破解了 ssh, 但不能像常规的 openwrt 一样自由的安装软件与配置;
 
 以我手上的 6500PRO 为例, /etc/ 目录是会在每次重启之后清空的, 只有 /data/other 留有100M左右空间; 
-:::
 
 不提废话, 开搞!
 
@@ -24,7 +18,7 @@
 通过 ssh 链接小米路由器 `ssh root@10.5.6.1` , 执行官方安装命令会有如下报错, 有用的信息是
 这个链接 https://pkgs.tailscale.com/stable/#static 和 `LEDE_ARCH="aarch64_cortex-a53_neon-vfpv4"`
 
-::: details curl -fsSL https://tailscale.com/install.sh | sh 输出结果
+curl -fsSL https://tailscale.com/install.sh | sh 输出结果
 ```bash
 root@XiaoQiang:~# curl -fsSL https://tailscale.com/install.sh | sh
 Couldn't determine what kind of Linux is running.
@@ -61,7 +55,6 @@ LEDE_DEVICE_REVISION="v0"
 LEDE_RELEASE="OpenWrt 18.06-SNAPSHOT unknown"
 
 ```
-:::
 
 ## - 1. 手动下载二进制文件
 
@@ -141,9 +134,8 @@ service tailscale start
 > 理论上可行, 还没验证
 
 
-::: danger 路由器重启会删除除了 /data/ 路径下的所有其他文件
+路由器重启会删除除了 /data/ 路径下的所有其他文件
 比方说我们添加的 /etc/init.d/tailscale 文件, 所以利用一下 ShellCarsh 的软固化功能, 把我们的启动脚本放到 ShellCarsh 的软固化脚本里面执行一下
-:::
 
 首先找到 ShellCrash 安装目录, 我的是 /data/ShellCrash, 修改 misnap_init.sh 这个文件, 在大概这个位置
 
@@ -159,6 +151,22 @@ service tailscale start
     fi
 +   source /data/other/autorun.sh
 ```
+
+:::
+
+## 安装与配置
+
+```bash
+apk add tailscale
+rc-update add tailscale
+tailscale update
+tailscale up --advertise-exit-node --advertise-route=10.5.6.0/24 --reset
+```
+
+有问题的话, 可以通过手动运行 tailscaled 命令查看 log 来排查
+
+之后再 tailscale 的 Admin console WEB 页面开启 子路由和退出节点
+![tailconsole](/lab/assets/tailconsole.png)
 
 
 ## 小结

@@ -2,7 +2,7 @@
 
 ## 硬盘分配
 
-之前有提到我单独留了一块硬盘分区 挂在到了 `/home/cloud` , 可以回去 [MiniPC](/lab/minipc.md) 部分查看
+之前有提到我单独留了一块硬盘分区 挂在到了 `/home/cloud` , 可以回去 [MiniPC](/lab/0x02minipc.md) 部分查看
 需要修改对应的配置文件挂载到 lxc 中
 
 并且, 宿主机中, 记得 `chmod -R 777 /home/cloud` 给够权限

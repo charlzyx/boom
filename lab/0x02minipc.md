@@ -140,7 +140,6 @@ LXC CT容器的优点：
 :::
 
 
-
 - [openwrt 官方](https://archive.openwrt.org/releases/23.05.3/targets/x86/64/)
 - [清华镜像站](https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/23.05.4/targets/x86/64/)
 - [带佬的可定制](https://openwrt.ai/?target=x86%2F64&id=generic)
@@ -222,12 +221,10 @@ config device
 
 重启之后， `ip addr` 查看下ip信息， 之后就可以通过浏览器来访问 OpenWRT LuCI 界面了.
 
-
-## opkg repo 更新
-
 ```bash
 # 更新软件源
 sed -i 's_downloads.openwrt.org_mirrors.tuna.tsinghua.edu.cn/openwrt_' /etc/opkg/distfeeds.conf
+opkg update
 
 ```
 
@@ -258,7 +255,6 @@ service wsdd2 start
 ![smb](/lab/assets/lucismb.png)
 
 
-
 ## tailscale
 
 简单来说, tailscale 是一个基于 WireGuard® 的 VPN 服务, 可以在公网设备和家里局域网之间打洞.
@@ -281,12 +277,26 @@ tailscale up --advertise-exit-node  --advertise-routes=10.5.6.0/24 --reset
 
 > [!IMPORTANT] 别忘了在 OpenWRT 中开放防火墙
 
-![firewall](/lab/assets/firewall.png)
+![firewall](/lab/assets/lucifirewall.png)
 
 
 成功的话, 就可以在安装 tailscale 客户端, 并开启 VPN 链接的情况下, 在公网使用局域网ip网段 `10.5.6.0/24` 进行访问了, 就像这样
 
-![showtime](/lab/assets/showtime.png)
+```bash
+~ » tailscale ping 10.5.6.10                                           chao@mac
+pong from air (100.101.102.103) via DERP(tok) in 243ms
+pong from air (100.101.102.103) via DERP(tok) in 245ms
+--------------------------------------------------------------------------------
+~ » tailscale ping 10.5.6.1                                      130 ↵ chao@mac
+pong from air (100.101.102.103) via DERP(tok) in 245ms
+pong from air (100.101.102.103) via DERP(tok) in 246ms
+pong from air (100.101.102.103) via DERP(tok) in 240ms
+--------------------------------------------------------------------------------
+~ » tailscale ping 10.5.6.200                                    130 ↵ chao@mac
+pong from air (100.101.102.103) via DERP(tok) in 241ms
+pong from air (100.101.102.103) via DERP(tok) in 242ms
+pong from air (100.101.102.103) via DERP(tok) in 242ms
+```
 
 当然 tailscale 其实提供了多种访问方式, 另外还有 tailscale serve / tailscale funnel 将本地映射到公网之类的高级功能, 可以自由探索一番
 

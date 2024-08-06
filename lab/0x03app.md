@@ -30,7 +30,7 @@ sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/ins
 reboot
 ```
 
-之后关闭容器, 就可以把118转换 CT 模板了， 下次就可以直接从这个模版克隆出来
+之后关闭容器, 就可以把119转换 CT 模板了， 下次就可以直接从这个模版克隆出来
 
 ## 从模版克隆创建
 
@@ -70,13 +70,14 @@ alpine 运行这个有 glibc 的问题, 下面是修复脚本
 # https://github.com/sgerrand/alpine-pkg-glibc/issues/210#issuecomment-1841801227
 echo 'https://storage.sev.monster/alpine/edge/testing' | tee -a /etc/apk/repositories
 wget https://storage.sev.monster/alpine/edge/testing/x86_64/sevmonster-keys-1-r0.apk
-apk add --allow-untrusted ./sevmonster-keys-1-r0.apk
-apk update
+mv ./sevmonster-keys-1-r0.apk ./glibc.apk # 2.39 在 2024年08月06日13:22:55
+
+apk add --allow-untrusted ./glibc.apk
 apk add gcompat 
 rm -rf /lib/ld-linux-x86-64.so.2 
 apk add --force-overwrite glibc 
 apk add glibc-bin
-rm -rf ./sevmonster-keys-1-r0.apk
+rm -rf ./glibc.apk
 
 # 第二步: fix libstdc++ (迅雷需要)
 # https://stackoverflow.com/questions/11471722/libstdc-so-6-cannot-open-shared-object-file-no-such-file-or-directory
@@ -130,8 +131,7 @@ rc-service xunlei start
 
 ## alist
 
-[可以用来挂在WebDav的软件](https://alist.nn.ci/zh/guide/webdav.html#%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E6%8C%82%E8%BD%BDwebdav%E7%9A%84%E8%BD%AF%E4%BB%B6)
-
+阿里云盘限速了, 聊胜于无吧
 
 ```sh
 mkdir -p /opt/alist && cd /opt/alist
@@ -177,4 +177,4 @@ rc-service alist start
 
 ## 结语（暂时
 
-其他应用都是类似的方式添加， 举一反三
+其他应用添加方式类似, 举一反三

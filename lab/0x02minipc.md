@@ -104,7 +104,7 @@ mkdir /home/cloud && chmod -R 755 /home/cloud
 
 > 不要配置到模版中去，先克隆，再进行配置
 
-```bash
+```diff
 # 移除容器安全配置 docker 需要
 +lxc.apparmor.profile: unconfined
 +lxc.cap.drop:

@@ -279,6 +279,11 @@ tailscale up --advertise-exit-node  --advertise-routes=10.5.6.0/24 --reset
 之后再 tailscale 的 Admin console WEB 页面开启 子路由和退出节点
 ![tailconsole](/lab/assets/tailconsole.png)
 
+> IMPORTANT! 别忘了在 OpenWRT 中开放防火墙
+
+![firewall](/lab/assets/firewall.png)
+
+
 成功的话, 就可以在安装 tailscale 客户端, 并开启 VPN 链接的情况下, 在公网使用局域网ip网段 `10.5.6.0/24` 进行访问了, 就像这样
 
 ![showtime](/lab/assets/showtime.png)

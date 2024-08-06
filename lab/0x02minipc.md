@@ -279,7 +279,7 @@ tailscale up --advertise-exit-node  --advertise-routes=10.5.6.0/24 --reset
 之后再 tailscale 的 Admin console WEB 页面开启 子路由和退出节点
 ![tailconsole](/lab/assets/tailconsole.png)
 
-> IMPORTANT! 别忘了在 OpenWRT 中开放防火墙
+> [!IMPORTANT] 别忘了在 OpenWRT 中开放防火墙
 
 ![firewall](/lab/assets/firewall.png)
 

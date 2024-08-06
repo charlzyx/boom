@@ -18,7 +18,7 @@ export default withMermaid({
     sidebar: [
       { text: "0x00.写在前面", link: "/lab/index" },
       { text: "0x01.小米路由器", link: "/lab/0x01router" },
-      { text: "0x02.MiniPC.Air", link: "/lab/0x02minipc" },
+      { text: "0x02.MiniPC.AirLAN", link: "/lab/0x02minipc" },
       { text: "0x03.LXC 应用", link: "/lab/0x03app" }
     ],
     footer: {

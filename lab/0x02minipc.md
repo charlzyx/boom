@@ -230,6 +230,7 @@ opkg update
 
 ## SMB 服务器 
 
+
 可以方便的在局域网共享文件
 
 ```bash
@@ -251,8 +252,16 @@ service wsdd2 enable
 service wsdd2 start
 ```
 
-可视化的 smb 配置要友好的多了
+
+Services -> Network Shares 可视化的 smb 配置要友好的多了
+
 ![smb](/lab/assets/lucismb.png)
+
+## 关闭DHCP
+不然他会劫持主路由的 DHCP, 点击右上角 Delete 然后 Save & Apply 
+![rmdhcp](/lab/assets/rmdhcp.png)
+
+
 
 
 ## tailscale
